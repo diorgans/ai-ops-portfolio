@@ -600,6 +600,13 @@ function deriveTier(f) {
   return { tier, why };
 }
 
+// Leads arrived in Sept 2026. Timeline is judged relative to when the enquiry
+// landed — that is the information a triage system has at scoring time.
+function fmtDate(iso) {
+  const d = new Date(iso);
+  return d.toLocaleDateString("en-GB", { weekday:"short", day:"numeric", month:"short", year:"numeric" });
+}
+
 const KEY = "lead-triage-labels-v1";
 let labels = {};
 try { labels = JSON.parse(localStorage.getItem(KEY) || "{}"); } catch (e) { labels = {}; }
@@ -635,6 +642,8 @@ function render() {
     <div class="card">
       <div class="meta"><b>${L.id}</b> · ${L.first_name} ${L.last_name} · ${L.email}
         ${L.company ? " · <b>" + L.company + "</b>" : " · <i>no company given</i>"}</div>
+      <div class="meta">Submitted <b>${fmtDate(L.submitted_at)}</b>
+        <span class="hint" style="margin-left:6px">— judge timeline relative to this, not to today</span></div>
       <div class="msg">${L.message.replace(/&/g,"&amp;").replace(/</g,"&lt;")}</div>
       ${FIELDS.map((f,fi) => `
         <div class="q">
