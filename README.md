@@ -6,8 +6,74 @@ sample** rather than assumed to work.
 
 All data is synthetic. No real person, company, or customer record appears anywhere in this repo.
 
-**Status:** rubric and eval set built; awaiting human labels. No workflow or extraction code exists
-yet — that is deliberate, see below.
+**Status:** labelled and measured. Extraction beats the baseline by a wide margin; n8n/HubSpot
+orchestration not built yet.
+
+## Results
+
+50 synthetic leads, hand-labelled, 3 runs per arm on `claude-opus-5` at `effort: low`. 300 calls,
+$3.46.
+
+| | tier accuracy | off-by-one | disqualifier recall |
+|---|---|---|---|
+| baseline — always predict the majority tier | 36.0% | — | 0% |
+| **derived** — model reports facts, code applies the rubric | **82.7%** | 23/150 | **24/24** |
+| **direct** — model reports facts *and* decides the tier | 71.3% | 40/150 | **24/24** |
+
+Taking the tier decision away from the model is worth **+11.4 points** (~2.4 standard errors).
+Across 3 runs only 1 of 50 leads varied in each arm, so the gap is systematic, not sampling noise.
+
+### Where the gap actually comes from
+
+Not from the disqualifier traps — both arms caught **24/24** with **zero** false positives,
+including a support director at a perfect-fit company who was asking about jobs. The entire
+difference is in how true-D leads are reached:
+
+| direct arm, true-D rows | n | predicted non-D |
+|---|---|---|
+| D because of a disqualifier (Rule 1 — one absolute override) | 24 | **0** |
+| D via Rules 2/3 (grid → modifier → cap) | 30 | **24** |
+
+**The model applies a single explicit override rule perfectly and compositional rules badly.**
+Rule 1 is one sentence with no arithmetic. Rules 2/3 require a table lookup, then a conditional
+modifier, then an authority cap — and there it quietly rounds D up to C. In a sales queue that is
+the expensive direction to be wrong in.
+
+The derived arm doesn't have the problem because the composition happens in code, where it is
+deterministic and unit-tested.
+
+### Which field errors actually matter
+
+Field accuracy is near-identical between arms (same prompt), so the tier gap isn't an extraction
+problem. Within the derived arm, comparing rows where the tier was right against rows where it was
+wrong:
+
+| field | disagreement when tier correct | when tier wrong |
+|---|---|---|
+| `use_case_stated` | 4% | **58%** |
+| `timeline` | 15% | 35% |
+| `seniority` | 5% | 31% |
+| `budget_signal` | 0% | 23% |
+| `support_function` | 24% | 12% |
+
+`use_case_stated` is the dominant error source — and `support_function`, despite being the
+*least* accurate field overall at 78%, barely propagates to the tier at all. Accuracy per field is
+the wrong thing to optimise; what matters is which field errors change the outcome.
+
+### Honest caveat on the error count
+
+Several of the 26 derived-arm misses are **label-vs-model disagreements on genuinely ambiguous
+wording**, not clear model failures:
+
+- **L03** — *"I lead support operations"*: labelled `manager`, model said `director`. Defensible
+  either way, and it moves the tier.
+- **L22** — Norwegian, *"Jeg er leder for kundeservice"*: same ambiguity, in translation.
+- **L47** — a strong-fit prospect who *just signed with a competitor*. The rubric has no category
+  for "good lead, wrong time", so it falls to D through a downgrade. That is a gap in the rubric,
+  not a model error.
+
+Tightening the `use_case_stated` and `seniority` definitions is the highest-value next change, and
+it should be measured the same way rather than assumed to help.
 
 ---
 
