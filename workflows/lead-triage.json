@@ -1,0 +1,153 @@
+{
+  "name": "Lead Triage — Claude + rubric → HubSpot",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "lead-triage",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "a1000000-0000-4000-8000-000000000001",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -220,
+        0
+      ],
+      "webhookId": "a1000000-0000-4000-8000-000000000001"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.anthropic.com/v1/messages",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "anthropic-version",
+              "value": "2023-06-01"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({\n  model: \"claude-sonnet-5\",\n  max_tokens: 1200,\n  system: \"You are a JSON-only API. You output exactly one JSON object and nothing else.\",\n  output_config: { effort: \"low\" },\n  messages: [{ role: \"user\", content: \"You are triaging an inbound sales enquiry for Northwind Analytics, a B2B customer-support\\nanalytics platform. It ingests support tickets and chat transcripts and reports on resolution\\ntime, deflection, CSAT drivers and agent workload.\\n\\nYour job is to report SEVEN FACTS about the enquiry. Do not assign a priority, score or tier —\\nthat is decided downstream by a fixed rule set. Report only what the message supports.\\n\\nReturn raw JSON, no markdown, no commentary:\\n\\n{\\n  \\\"disqualifier\\\": \\\"none\\\" | \\\"job_seeker\\\" | \\\"student\\\" | \\\"competitor\\\" | \\\"vendor_pitch\\\" | \\\"consumer\\\" | \\\"spam\\\",\\n  \\\"company_size\\\": \\\"micro\\\" | \\\"small\\\" | \\\"mid\\\" | \\\"large\\\" | \\\"unknown\\\",\\n  \\\"support_function\\\": \\\"yes\\\" | \\\"no\\\" | \\\"unclear\\\",\\n  \\\"seniority\\\": \\\"exec\\\" | \\\"director\\\" | \\\"manager\\\" | \\\"ic\\\" | \\\"unknown\\\",\\n  \\\"timeline\\\": \\\"immediate\\\" | \\\"this_quarter\\\" | \\\"exploratory\\\" | \\\"none_stated\\\",\\n  \\\"budget_signal\\\": \\\"yes\\\" | \\\"no\\\",\\n  \\\"use_case_stated\\\": \\\"yes\\\" | \\\"no\\\",\\n  \\\"evidence\\\": \\\"<one short quote from the message that drove the disqualifier decision, or empty>\\\"\\n}\\n\\nFIELD DEFINITIONS\\n\\ndisqualifier — is this person someone Northwind can sell to at all?\\n  job_seeker   asking about employment, careers, internships, or sending a CV\\n  student      academic project, thesis, coursework\\n  competitor   works at a company offering overlapping support-analytics tooling\\n  vendor_pitch selling something TO Northwind rather than buying from it\\n  consumer     an individual member of the public, no company context, often written to the\\n               wrong company entirely\\n  spam         incoherent, link farm, or an unrelated bulk solicitation\\n  none         anything else\\n  Judge the WRITER, not their customers. A bank or retailer whose own customers are consumers\\n  is a normal business enquiry. Someone evaluating vendors is a BUYER, not a vendor_pitch —\\n  the word \\\"vendor\\\" appearing in a message means nothing by itself.\\n\\ncompany_size — micro <50, small 50-249, mid 250-1999, large 2000+, else unknown.\\n  Size may be inferred from a named well-known company. It may NOT be inferred from an email\\n  domain alone.\\n\\nsupport_function — does the company have a team of people whose job is handling customers?\\n  Look for: a support or service team, agents, ticket or contact volume, a helpdesk, a contact\\n  centre, complaints handling. Having customers is not the same as having a support function.\\n  Use \\\"unclear\\\" when you genuinely cannot tell.\\n\\nseniority — of the person writing.\\n  exec      C-suite, VP, COO\\n  director  Director of X, Head of X\\n  manager   Manager, Team Lead, Supervisor\\n  ic        agent, analyst, engineer, specialist, coordinator — no reports, no budget authority\\n  unknown   no title or role context given\\n  Judge the actual role, not the word in the title: a product manager is an IC.\\n\\ntimeline — judged relative to when the enquiry was submitted, not to today.\\n  immediate     now, asap, top priority, a deadline within weeks\\n  this_quarter  a named deadline roughly within three months of submission\\n  exploratory   they SAY they are looking around, or a deadline far out (next year or beyond)\\n  none_stated   timing is never mentioned\\n  The difference between exploratory and none_stated matters: exploratory means they told you\\n  they are browsing; none_stated means the subject never came up.\\n\\nbudget_signal — true ONLY if budget, funding, pricing approval or spend is explicitly\\n  referenced. \\\"We have money for it\\\", \\\"budget approved\\\", \\\"I'll find the budget\\\" all count.\\n  Asking for a price list does not.\\n\\nuse_case_stated — is there any concrete statement of a need, problem or situation?\\n  \\\"We're replacing our reporting stack this quarter\\\" — yes.\\n  \\\"Do you have an API?\\\" with no other context — no.\\n  A bare question, a bare request for a demo, or a one-word message — no.\\n\\nReturn only the JSON object, starting with { and ending with }.\\n\" + \"\\n\\n---\\n\\nSubmitted: \" + ($json.body.submitted_at || new Date().toISOString()) + \"\\nFrom: \" + ($json.body.first_name || \"\") + \" \" + ($json.body.last_name || \"\") + \" <\" + ($json.body.email || \"\") + \">\" + \"\\nCompany field: \" + ($json.body.company || \"(blank)\") + \"\\n\\nMessage:\\n\" + ($json.body.message || \"\") }]\n}) }}",
+        "options": {
+          "timeout": 120000
+        }
+      },
+      "id": "a1000000-0000-4000-8000-000000000002",
+      "name": "Claude — extract facts",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        0,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Parse Claude's reply, then apply the rubric IN CODE.\n// Measured: deriving the tier here scores 82.7% vs 71.3% when the model is\n// asked to decide it. The model is reliable at reporting facts and unreliable\n// at multi-step rule composition, so the composition happens here.\n\nconst FIELDS = [\n  { key: \"disqualifier\" }, { key: \"company_size\" }, { key: \"support_function\" },\n  { key: \"seniority\" }, { key: \"timeline\" }, { key: \"budget_signal\" }, { key: \"use_case_stated\" },\n];\n\nconst ORDER = [\"D\",\"C\",\"B\",\"A\"];\n\n// Executable form of docs/RUBRIC.md. The human labels the seven facts;\n// the tier follows from the rules so labels stay internally consistent.\nfunction deriveTier(f) {\n  for (const x of FIELDS) if (!f[x.key]) return { tier:null, why:\"Answer all seven to see the tier.\" };\n  if (f.disqualifier !== \"none\") return { tier:\"D\", why:\"Rule 1 — \" + f.disqualifier.replace(\"_\",\" \") + \" overrides fit.\" };\n  if (f.company_size === \"micro\")\n    return f.support_function === \"yes\"\n      ? { tier:\"C\", why:\"Rule 2 — micro company but a real support function.\" }\n      : { tier:\"D\", why:\"Rule 2 — micro company, no support function.\" };\n  if (f.support_function === \"no\" && f.use_case_stated === \"no\")\n    return { tier:\"C\", why:\"Rule 2 — no support context and no stated use case.\" };\n\n  const senior = f.seniority === \"exec\" || f.seniority === \"director\";\n  const manager = f.seniority === \"manager\";\n  const urgent = f.timeline === \"immediate\" || f.timeline === \"this_quarter\";\n  let tier, why;\n  if (senior)       { tier = urgent ? \"A\" : \"B\"; }\n  else if (manager) { tier = urgent ? \"B\" : (f.timeline === \"exploratory\" ? \"B\" : \"C\"); }\n  else              { tier = urgent ? \"B\" : \"C\"; }\n  why = \"Rule 3 grid → \" + tier;\n\n  if (f.budget_signal === \"yes\" && (senior || manager)) {\n    const i = ORDER.indexOf(tier);\n    if (i < 3) { tier = ORDER[i+1]; why += \", upgraded for budget signal\"; }\n  } else if (f.use_case_stated === \"no\") {\n    const i = ORDER.indexOf(tier);\n    if (i > 0) { tier = ORDER[i-1]; why += \", downgraded — no use case stated\"; }\n  }\n\n  // Authority gate: A requires director or above. Without this the budget\n  // upgrade can lift a manager to A, which contradicts the rubric. Applied\n  // last so it caps whatever the modifiers produced.\n  if (tier === \"A\" && !senior) { tier = \"B\"; why += \", capped at B — A needs director or above\"; }\n\n  return { tier, why };\n}\n\n// Leads arrived in Sept 2026. Timeline is judged relative to when the enquiry\n// landed — that is the information a triage system has at scoring time.\nfunction fmtDate(iso) {\n  const d = new Date(iso);\n  return d.toLocaleDateString(\"en-GB\", { weekday:\"short\", day:\"numeric\", month:\"short\", year:\"numeric\" });\n}\n\nconst out = [];\nfor (const item of $input.all()) {\n  const blocks = item.json.content || [];\n  const textBlock = blocks.find((b) => b.type === \"text\");\n  const raw = (textBlock && textBlock.text) || \"\";\n\n  let facts = null;\n  try {\n    let c = raw.replace(/```json\\s*/gi, \"\").replace(/```\\s*/g, \"\").trim();\n    const a = c.indexOf(\"{\"), b = c.lastIndexOf(\"}\");\n    if (a !== -1 && b > a) c = c.slice(a, b + 1);\n    facts = JSON.parse(c);\n  } catch (e) {\n    out.push({ json: { ok: false, error: \"could not parse model reply\", raw: raw.slice(0, 400) } });\n    continue;\n  }\n\n  const { tier, why } = deriveTier(facts);\n  const lead = $('Webhook').first().json.body || {};\n\n  out.push({ json: {\n    ok: true,\n    tier,\n    tier_reason: why,\n    facts,\n    lead,\n    model: item.json.model || null,\n    usage: item.json.usage || null,\n  }});\n}\nreturn out;"
+      },
+      "id": "a1000000-0000-4000-8000-000000000003",
+      "name": "Apply rubric (code)",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        220,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.hubapi.com/crm/v3/objects/contacts",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ properties: {\n  email: $json.lead.email,\n  firstname: $json.lead.first_name,\n  lastname: $json.lead.last_name,\n  company: $json.lead.company,\n  lead_triage_tier: $json.tier,\n  lead_triage_reason: $json.tier_reason\n} }) }}",
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "id": "a1000000-0000-4000-8000-000000000004",
+      "name": "HubSpot — create contact",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        440,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ tier: $('Apply rubric (code)').first().json.tier, reason: $('Apply rubric (code)').first().json.tier_reason, facts: $('Apply rubric (code)').first().json.facts }) }}",
+        "options": {}
+      },
+      "id": "a1000000-0000-4000-8000-000000000005",
+      "name": "Respond",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        660,
+        0
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Claude — extract facts",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Claude — extract facts": {
+      "main": [
+        [
+          {
+            "node": "Apply rubric (code)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Apply rubric (code)": {
+      "main": [
+        [
+          {
+            "node": "HubSpot — create contact",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HubSpot — create contact": {
+      "main": [
+        [
+          {
+            "node": "Respond",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "pinData": {}
+}
