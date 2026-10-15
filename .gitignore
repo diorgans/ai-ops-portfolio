@@ -16,10 +16,9 @@ credentials.json
 # n8n local state, if the instance is ever run from inside this folder
 .n8n/
 
-# Eval run outputs — regenerable, and they would churn the diff on every run
-results/*.json
-results/*.csv
-!results/.gitkeep
+# Eval run outputs are COMMITTED deliberately - they are the evidence behind
+# the numbers in the README, and a portfolio claim without its raw results is
+# just an assertion. They are small and append-only.
 
 # OS / editor noise
 .DS_Store

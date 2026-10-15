@@ -25,6 +25,9 @@ const BUDGET   = Number(arg("budget", 6));
 const EFFORT   = arg("effort", "low");       // classification: low effort is plenty
 const CONC     = Number(arg("concurrency", 2));
 const KEYFILE  = arg("key-file", null);
+// --arms derived          run one arm only (half the calls, half the spend)
+// --arms derived,direct   both (default)
+const ARMS = String(arg("arms", "derived,direct")).split(",").map(s => s.trim()).filter(Boolean);
 
 // $ per million tokens. Update from the live pricing page rather than memory.
 const PRICES = {
@@ -129,13 +132,13 @@ function scoreOne(arm, pred, gold) {
 if (DRY) {
   const sample = PROMPTS.derived + "\n\n---\n\n" + leadText(leads[0]);
   const estIn = Math.round(sample.length / 3.6);          // rough chars-per-token
-  const nCalls = leads.length * RUNS * 2;
+  const nCalls = leads.length * RUNS * ARMS.length;
   const estOut = 220;
   const est = (estIn * nCalls / 1e6) * price.in + (estOut * nCalls / 1e6) * price.out;
   console.log(`DRY RUN — nothing called, nothing spent\n`);
   console.log(`  model        : ${MODEL}  (effort ${EFFORT})`);
   console.log(`  leads        : ${leads.length}`);
-  console.log(`  arms         : derived, direct`);
+  console.log(`  arms         : ${ARMS.join(", ")}`);
   console.log(`  runs per arm : ${RUNS}`);
   console.log(`  total calls  : ${nCalls}`);
   console.log(`  est input    : ~${estIn} tok/call`);
@@ -154,7 +157,7 @@ const key = getKey();
 if (!key) { console.error("No API key. Pass --key-file <path> or set ANTHROPIC_API_KEY."); process.exit(1); }
 
 const jobs = [];
-for (let r = 0; r < RUNS; r++) for (const l of leads) for (const arm of ["derived", "direct"]) jobs.push({ arm, l, r });
+for (let r = 0; r < RUNS; r++) for (const l of leads) for (const arm of ARMS) jobs.push({ arm, l, r });
 
 const outDir = join(root, "results");
 if (!existsSync(outDir)) mkdirSync(outDir, { recursive: true });
@@ -186,7 +189,7 @@ console.log(`\nwrote ${outFile}`);
 console.log(`tokens in ${inTok} out ${outTok}   COST $${spend().toFixed(2)}${abortAll ? `   HALTED: ${abortAll}` : ""}\n`);
 
 const ORD = { D: 0, C: 1, B: 2, A: 3 };
-for (const arm of ["derived", "direct"]) {
+for (const arm of ARMS) {
   const rs = results.filter(r => r.arm === arm);
   const ok = rs.filter(r => r.parsed);
   if (!ok.length) { console.log(`--- ${arm.toUpperCase()}: no parsed results ---\n`); continue; }

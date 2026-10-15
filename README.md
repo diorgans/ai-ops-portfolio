@@ -42,6 +42,24 @@ the expensive direction to be wrong in.
 The derived arm doesn't have the problem because the composition happens in code, where it is
 deterministic and unit-tested.
 
+### Does it need the expensive model?
+
+No. The derived arm was re-run on `claude-sonnet-5` — 50 calls, $0.20.
+
+| model | tier accuracy | disqualifier recall | cost per lead |
+|---|---|---|---|
+| `claude-opus-5` | 82.7% (n=150) | 24/24 | $0.0115 |
+| `claude-sonnet-5` | **86.0%** (n=50) | 8/8 | **$0.0040** |
+
+Sonnet scores 3.3 points higher at **2.9× lower cost per lead**. That difference is about 0.6
+standard errors, so the honest claim is **"no measurable difference at a third of the price"**, not
+"Sonnet is better". Either way the cheaper model is the right production choice: at 1,000 leads a
+month that is $4.00 versus $11.50, for accuracy that is indistinguishable on this sample.
+
+Worth noting what did *not* degrade: disqualifier recall stayed perfect with zero false positives.
+The thing that would actually hurt — a job seeker reaching a sales queue — is not where the cheaper
+model gives anything up.
+
 ### Which field errors actually matter
 
 Field accuracy is near-identical between arms (same prompt), so the tier gap isn't an extraction
@@ -74,6 +92,30 @@ wording**, not clear model failures:
 
 Tightening the `use_case_stated` and `seniority` definitions is the highest-value next change, and
 it should be measured the same way rather than assumed to help.
+
+### What the eval itself cost, and what I'd do differently
+
+| run | calls | cost |
+|---|---|---|
+| Opus 5, both arms, 3 runs each | 300 | $3.46 |
+| Sonnet 5, derived arm, 1 run | 50 | $0.20 |
+
+**Three runs per arm was 3× more than this task needed.** Scored run-by-run, a single pass gives
+the same answer:
+
+| | derived | direct | gap |
+|---|---|---|---|
+| run 0 alone | 82.0% | 70.0% | 12.0pp |
+| run 1 alone | 84.0% | 72.0% | 12.0pp |
+| run 2 alone | 82.0% | 72.0% | 10.0pp |
+| pooled | 82.7% | 71.3% | 11.4pp |
+
+The repetition was carried over from a previous project where the failure *was* stochastic and a
+single run per item genuinely told you nothing. Here only 1 of 50 leads varied across runs, so the
+extra passes bought precision nobody needed and cost 3× as much.
+
+The rule that falls out of it: **pilot with one run, measure the run-to-run variance, and only add
+passes if the variance is large enough to change the conclusion.**
 
 ---
 
