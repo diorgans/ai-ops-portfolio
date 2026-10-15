@@ -1,20 +1,21 @@
-# Sends two test leads to the n8n webhook and prints what comes back.
+# Sends test leads to the n8n webhook, one at a time, and checks each result
+# against the human label it should reproduce.
 #
-# Double-click won't run a .ps1 — right-click this file and choose
-# "Run with PowerShell". Or from a PowerShell window:  .\test-webhook.ps1
+# Right-click this file -> "Run with PowerShell".
 #
-# Before running: in n8n, click "Test workflow" so it is listening.
-# Run this script, and it sends the FIRST lead. n8n stops listening after one
-# request, so click "Test workflow" again before the script sends the second —
-# the script pauses and waits for you.
+# n8n accepts ONE request per click of "Test workflow". The script therefore
+# pauses before each send and tells you to click it again. It also prints which
+# lead it is sending and whether the answer matched, so the sequence cannot
+# silently slip out of step.
 
 $ErrorActionPreference = "Stop"
 $url = "http://localhost:5678/webhook-test/lead-triage"
 
 $leads = @(
   @{
-    label = "L04 - job seeker at a PERFECT-fit company (expect tier D)"
-    body  = @{
+    id = "L04"; expect = "D"
+    why = "support team lead at a PERFECT-fit company - but he is asking for a JOB"
+    body = @{
       first_name = "Tobias"; last_name = "Lindqvist"
       email = "tobias@ravensbourne-logistics.example"
       company = "Ravensbourne Logistics"
@@ -23,8 +24,9 @@ $leads = @(
     }
   },
   @{
-    label = "L01 - VP with budget and a deadline, SAME company (expect tier A)"
-    body  = @{
+    id = "L01"; expect = "A"
+    why = "SAME company - VP with 60 agents, a named deadline and exec pressure"
+    body = @{
       first_name = "Marguerite"; last_name = "Okonkwo"
       email = "m.okonkwo@ravensbourne-logistics.example"
       company = "Ravensbourne Logistics"
@@ -36,37 +38,62 @@ $leads = @(
 
 Write-Host ""
 Write-Host "Posting to $url" -ForegroundColor Cyan
-Write-Host ""
 
-for ($i = 0; $i -lt $leads.Count; $i++) {
-  $lead = $leads[$i]
-  Write-Host ("-" * 68)
-  Write-Host $lead.label -ForegroundColor Yellow
+$pass = 0; $fail = 0
+
+foreach ($lead in $leads) {
   Write-Host ""
-  Write-Host "Make sure you have clicked 'Test workflow' in n8n, then press Enter."
+  Write-Host ("=" * 68)
+  Write-Host ("SENDING {0}  -  {1} {2}" -f $lead.id, $lead.body.first_name, $lead.body.last_name) -ForegroundColor Yellow
+  Write-Host ("  {0}" -f $lead.why)
+  Write-Host ("  expected tier: {0}" -f $lead.expect)
+  Write-Host ""
+  Write-Host "  >> Click 'Test workflow' in n8n NOW, then press Enter here." -ForegroundColor Cyan
   Read-Host | Out-Null
 
   try {
     $resp = Invoke-RestMethod -Uri $url -Method Post -ContentType "application/json" `
               -Body ($lead.body | ConvertTo-Json -Depth 5) -TimeoutSec 120
-    Write-Host "RESPONSE:" -ForegroundColor Green
-    $resp | ConvertTo-Json -Depth 8 | Write-Host
+
+    $got = $resp.tier
+    Write-Host ""
+    if ($got -eq $lead.expect) {
+      Write-Host ("  PASS  {0}: expected {1}, got {1}" -f $lead.id, $lead.expect) -ForegroundColor Green
+      $pass++
+    } else {
+      Write-Host ("  FAIL  {0}: expected {1}, got {2}" -f $lead.id, $lead.expect, $got) -ForegroundColor Red
+      $fail++
+      Write-Host "        If the evidence quote below is from the OTHER lead, the"
+      Write-Host "        sequence slipped - n8n takes one request per click."
+    }
+    Write-Host ("  reason: {0}" -f $resp.reason)
+    if ($resp.facts.evidence) { Write-Host ("  evidence: `"{0}`"" -f $resp.facts.evidence) }
+    Write-Host ""
+    Write-Host "  facts returned:"
+    $resp.facts | ConvertTo-Json -Depth 5 | Write-Host
   }
   catch {
-    Write-Host "FAILED" -ForegroundColor Red
-    Write-Host $_.Exception.Message
-    if ($_.ErrorDetails.Message) { Write-Host $_.ErrorDetails.Message }
+    $fail++
     Write-Host ""
-    Write-Host "Common causes:"
-    Write-Host "  404  - n8n is not listening. Click 'Test workflow' in n8n first."
-    Write-Host "  500  - a node errored. Open the node in n8n to see which."
-    Write-Host "  connection refused - n8n is not running. Run start-n8n.bat."
+    Write-Host ("  FAILED to call the webhook for {0}" -f $lead.id) -ForegroundColor Red
+    Write-Host ("  {0}" -f $_.Exception.Message)
+    if ($_.ErrorDetails.Message) { Write-Host ("  {0}" -f $_.ErrorDetails.Message) }
+    Write-Host ""
+    Write-Host "  404                 n8n is not listening - click 'Test workflow' first"
+    Write-Host "  500                 a node errored - open it in n8n to see which"
+    Write-Host "  connection refused  n8n is not running - run start-n8n.bat"
   }
-  Write-Host ""
 }
 
-Write-Host ("-" * 68)
-Write-Host "Done. The first lead should be tier D, the second tier A." -ForegroundColor Cyan
-Write-Host "Same company, opposite outcomes - that contrast is the demo."
+Write-Host ""
+Write-Host ("=" * 68)
+if ($fail -eq 0) {
+  Write-Host ("ALL PASSED  ({0}/{0})" -f $pass) -ForegroundColor Green
+  Write-Host ""
+  Write-Host "Same company, opposite outcomes - one is a job seeker. That contrast"
+  Write-Host "is the demo."
+} else {
+  Write-Host ("{0} passed, {1} failed" -f $pass, $fail) -ForegroundColor Yellow
+}
 Write-Host ""
 Read-Host "Press Enter to close"
