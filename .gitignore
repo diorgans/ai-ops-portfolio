@@ -1,0 +1,30 @@
+# Dependencies
+node_modules/
+
+# ---------------------------------------------------------------------------
+# Secrets — never commit. API keys belong in environment variables or the
+# n8n credential store, never in a file here. If one ever lands in the repo,
+# rotate it rather than just deleting the file: git keeps history.
+# ---------------------------------------------------------------------------
+.env
+.env.*
+.anthropic_key
+*.key
+*.pem
+credentials.json
+
+# n8n local state, if the instance is ever run from inside this folder
+.n8n/
+
+# Eval run outputs — regenerable, and they would churn the diff on every run
+results/*.json
+results/*.csv
+!results/.gitkeep
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+.idea/
+.vscode/
