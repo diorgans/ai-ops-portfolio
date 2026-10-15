@@ -1,0 +1,46 @@
+# Dependencies
+node_modules/
+
+# Wrangler local state / build output
+.wrangler/
+dist/
+
+# ---------------------------------------------------------------------------
+# Secrets — never commit. Cloudflare Worker secrets live in the dashboard,
+# not in this repo. If a key ever lands in a file here, rotate it in the
+# Anthropic console rather than just deleting the file: git keeps history.
+# ---------------------------------------------------------------------------
+.env
+.env.*
+.dev.vars
+.anthropic_key
+*.key
+*.pem
+secrets.json
+
+# Timestamped backups written by save-bot-worker.ps1
+*.bak-*
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+.idea/
+.vscode/
+
+# ---------------------------------------------------------------------------
+# BEFORE MAKING THIS REPO PUBLIC
+#
+# CLAUDE.md contains personal career content (named target employers, resume
+# references, a Claude session link) and the Supabase project ref. It is
+# committed for now because this repo is local/private. Uncomment the line
+# below before adding a public GitHub remote — and note that removing it then
+# does NOT erase it from history, so it would need a history rewrite or a
+# fresh repo.
+#
+# Also still to scrub before going public:
+#   - discord-bot/bot-worker.js — hardcoded guild/channel/role/category IDs
+#   - discord-bot/README.md     — Supabase project ref
+# ---------------------------------------------------------------------------
+# CLAUDE.md

@@ -1,0 +1,21 @@
+name = "isya-grader-bot"
+main = "bot-worker.js"
+compatibility_date = "2024-09-23"
+compatibility_flags = ["nodejs_compat"]
+
+# Secrets are NOT stored here. Set them with:
+#   wrangler secret put DISCORD_PUBLIC_KEY
+#   wrangler secret put DISCORD_APP_ID
+#   wrangler secret put DISCORD_BOT_TOKEN
+#   wrangler secret put PARSE_WORKER_URL
+#   wrangler secret put SUPABASE_URL
+#   wrangler secret put SUPABASE_ANON_KEY
+#
+# grading-core.js is imported by bot-worker.js and bundled automatically.
+
+# Service binding to your image-parser worker. This lets the bot call the
+# parser internally and avoids Cloudflare error 1042 (worker-to-worker block).
+# The "service" value must match the parser worker's name exactly.
+[[services]]
+binding = "PARSE_WORKER"
+service = "late-leaf-cdaf"
