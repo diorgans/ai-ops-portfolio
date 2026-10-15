@@ -1,180 +1,231 @@
-# Setup — your steps
+# Setup — your steps, in detail
 
 Everything that could be built for you is built. These are the parts that need your accounts.
 
-Budget roughly 25 minutes. Steps 1–3 are account admin; step 4 onwards is n8n.
+About 25 minutes. Steps 2–3 are HubSpot admin, 4–8 are n8n.
 
 ---
 
-## 1. Start n8n (1 min)
+## 1. Start n8n
 
-Open a terminal — **your own terminal, not inside Claude Code**, or a background process reaper may
-kill it:
+Double-click **`start-n8n.bat`** in the project folder.
 
-```
-n8n start
-```
+Wait for **"Editor is now accessible via http://localhost:5678"** — about a minute on first run.
+Leave that console window open; closing it stops n8n.
 
-Leave that window open. Then go to **http://localhost:5678**. Create the owner account if you
-haven't already — it's local only, nothing is sent anywhere.
+Open **http://localhost:5678** and create the owner account if asked. It's local only.
+
+> Seeing a *"Failed to start Python task runner"* message and a list of deprecation warnings is
+> normal. The line that matters is **`Registered runner "JS Task Runner"`** — that's the one the
+> workflow needs.
+>
+> If n8n offers to configure a **sandbox service** asking for a URL and API key: **skip it.** It
+> needs Docker and is optional.
 
 ---
 
-## 2. HubSpot: create a private app token (5 min)
+## 2. HubSpot — create a private app token
 
-1. In HubSpot: **Settings** (gear icon) → **Integrations** → **Private Apps**
-2. **Create a private app**. Name it `Lead Triage`.
-3. **Scopes** tab → search for and tick:
-   - `crm.objects.contacts.write`
+A "private app" is HubSpot's name for an API token scoped to your own account.
+
+1. Go to **https://app.hubspot.com** and log in.
+2. Click the **gear icon** ⚙ in the top-right of the blue navigation bar. That's Settings.
+3. In the **left sidebar**, scroll down to the **Integrations** section and click **Private Apps**.
+   - Can't find it? There's a **search box at the top of that left sidebar** — type `private` and
+     it'll surface.
+4. Click the orange **Create a private app** button.
+5. On the **Basic Info** tab, set **Name** to `Lead Triage`. Description optional.
+6. Click the **Scopes** tab (next to Basic Info, near the top).
+7. In the **"Search scopes"** box type `contacts`.
+8. Tick these two checkboxes:
    - `crm.objects.contacts.read`
-4. **Create app** → copy the **access token**. It starts with `pat-`.
-   Keep this tab open; you'll paste it in step 4.
+   - `crm.objects.contacts.write`
+9. Click **Create app** (top right).
+10. A dialog warns you about the token — click **Continue creating**.
+11. You'll land on the app's page. Click **Show token**, then **Copy**.
 
-> HubSpot shows the token only once, same as an API key. Put it in a password manager if you want
-> it later.
+The token starts with `pat-`. **Paste it into Notepad for now** — you'll need it in step 4, and
+HubSpot only shows it once.
+
+> Don't see "Private Apps" at all? It needs Super Admin permission on the account. On your own
+> developer account you are, so it should be there.
 
 ---
 
-## 3. HubSpot: add two contact properties (4 min)
+## 3. HubSpot — add two contact properties
 
-The workflow writes the tier onto the contact, which needs somewhere to go.
+The workflow writes the tier onto the contact record, so the fields have to exist first.
 
-**Settings** → **Properties** → **Create property**, with object type **Contact**:
+1. Still in **Settings** (⚙).
+2. Left sidebar → **Data Management** → **Properties**.
+   - Or type `properties` in that sidebar search box.
+3. At the top there's a dropdown reading **"Select an object"**. Choose **Contact properties**.
+4. Click **Create property** (top right).
+5. Fill in:
 
-| field | value |
-|---|---|
-| Label | `Lead Triage Tier` |
-| **Internal name** | **`lead_triage_tier`** ← must match exactly |
-| Field type | Single-line text (or Dropdown with A, B, C, D) |
+   | field | value |
+   |---|---|
+   | Object type | Contact |
+   | Group | Contact information (any group is fine) |
+   | Label | `Lead Triage Tier` |
 
-Repeat for the second:
+6. **Check the internal name.** Under the Label box there's small grey text showing the internal
+   name HubSpot generated, with an edit (pencil) icon. It must read exactly:
+
+   ```
+   lead_triage_tier
+   ```
+
+   If it reads anything else, click the pencil and correct it. **This is the one thing that must
+   match exactly** — it's what the API writes to.
+
+7. Click **Next**. For **Field type** choose **Single-line text**.
+8. Click **Create**.
+
+Now repeat steps 4–8 for the second property:
 
 | field | value |
 |---|---|
 | Label | `Lead Triage Reason` |
-| **Internal name** | **`lead_triage_reason`** |
+| Internal name | `lead_triage_reason` |
 | Field type | Single-line text |
 
-> The internal name is what the API uses. HubSpot auto-generates it from the label, so check it and
-> correct it if it came out as something else.
-
 ---
 
-## 4. n8n: create two credentials (4 min)
+## 4. n8n — create two credentials
 
-In n8n, left sidebar → **Credentials** → **Add credential** → search **"Header Auth"**.
+n8n stores secrets separately from workflows, which is why importing the workflow doesn't bring
+them along.
 
-**Credential one — Anthropic**
+1. In n8n, find **Credentials** in the left sidebar. In this version it may be a **tab** at the top
+   of the **Overview** page rather than its own sidebar item — look for *Workflows | Credentials |
+   Executions*.
+2. Click **Add credential** (or **Create Credential**).
+3. In the search box type **`Header Auth`** and pick **Header Auth**.
+
+**Credential one — Anthropic:**
 
 | field | value |
 |---|---|
-| Credential name | `Anthropic API` |
 | Name | `x-api-key` |
-| Value | your Anthropic key (the one in `.anthropic_key`) |
+| Value | your Anthropic key — it's in `C:\Users\nchen\Downloads\lead-triage\.anthropic_key` |
 
-**Credential two — HubSpot**
+Rename the credential itself to **`Anthropic API`** — click the credential's title at the top of
+the dialog (it'll say something like *Header Auth account*) and type over it. Click **Save**.
+
+**Credential two — HubSpot:** repeat, new Header Auth credential:
 
 | field | value |
 |---|---|
-| Credential name | `HubSpot Private App` |
 | Name | `Authorization` |
-| Value | `Bearer pat-xxxxx` ← the word `Bearer`, a space, then your token |
+| Value | `Bearer pat-xxxxxxxx` |
+
+The value is the literal word **`Bearer`**, then **one space**, then your `pat-` token. Rename it
+to **`HubSpot Private App`**. Save.
+
+> Open `.anthropic_key` with Notepad to copy the key. Don't paste either secret into a chat window
+> or a file in the repo.
 
 ---
 
-## 5. Import the workflow (1 min)
+## 5. n8n — import the workflow
 
-In n8n: **Workflows** → the **…** menu (top right) → **Import from File** → choose
+1. Left sidebar → **Workflows** → **Create Workflow** (this opens a blank canvas).
+2. In the **top-right of the canvas**, click the **⋯** (three dots) menu.
+3. Choose **Import from File…**
+4. Select:
 
-```
-C:\Users\nchen\Downloads\lead-triage\workflows\lead-triage.json
-```
+   ```
+   C:\Users\nchen\Downloads\lead-triage\workflows\lead-triage.json
+   ```
 
-You should see five nodes left to right:
+Five nodes should appear, left to right:
 
 ```
 Webhook → Claude — extract facts → Apply rubric (code) → HubSpot — create contact → Respond
 ```
 
----
-
-## 6. Attach the credentials (2 min)
-
-Importing brings the nodes but **not** the credential links — n8n never exports secrets.
-
-- Open **Claude — extract facts** → *Credential for Header Auth* → pick **Anthropic API**
-- Open **HubSpot — create contact** → *Credential for Header Auth* → pick **HubSpot Private App**
-
-Save the workflow.
+Press **Ctrl+S** to save. Name it anything.
 
 ---
 
-## 7. Test it (5 min)
+## 6. n8n — attach the credentials to the nodes
 
-Click **Test workflow** (bottom of the canvas). n8n now waits for one request.
+Two nodes need a credential selected. Importing never carries secrets.
 
-Open a **second** terminal and send a lead. This is `L04` from the eval set — the support team lead
-at a perfect-fit company who is actually asking about jobs:
+1. **Double-click** the node **Claude — extract facts**.
+2. Near the top there's **Credential for Header Auth** with a dropdown. Choose **Anthropic API**.
+3. Close the node (click the canvas, or **Back to canvas** top-left).
+4. **Double-click** **HubSpot — create contact**.
+5. Same dropdown → choose **HubSpot Private App**.
+6. Close it, then **Ctrl+S** to save.
 
-```bash
-curl -X POST http://localhost:5678/webhook-test/lead-triage ^
-  -H "Content-Type: application/json" ^
-  -d "{\"first_name\":\"Tobias\",\"last_name\":\"Lindqvist\",\"email\":\"tobias@ravensbourne-logistics.example\",\"company\":\"Ravensbourne Logistics\",\"message\":\"Hi there, I am a support team lead at Ravensbourne. I saw you are hiring a solutions engineer - I have been in CX tooling for six years and would love to be considered. Is there someone on the talent side I can send my CV to?\"}"
-```
+---
 
-(In PowerShell the line-continuation character is `` ` `` rather than `^`; or just paste it as one
-long line.)
+## 7. Test it
 
-**Expected response:**
+1. In n8n, click **Test workflow** at the bottom of the canvas. It now waits for one request.
+2. In Explorer, **right-click `test-webhook.ps1`** → **Run with PowerShell**.
+3. The script pauses and tells you to press Enter — press it. It sends the first lead.
+4. Watch the n8n canvas: each node should turn green in turn.
+5. The script prints the response.
+
+**Expected first result — tier D:**
 
 ```json
 { "tier": "D", "reason": "Rule 1 — job seeker overrides fit.", "facts": { "disqualifier": "job_seeker", ... } }
 ```
 
-A **D** is the correct answer and the whole point — the company is an ideal customer, the person is
-not a buyer. Check HubSpot: the contact should exist with `Lead Triage Tier = D`.
+That's a support team lead at an **ideal customer** — and the correct answer is still D, because
+he's asking for a job. That's the whole point of the project.
 
-Try a second one to see the other end — this is `L01`, which should come back **A**:
+6. The script then waits again. **Click "Test workflow" in n8n once more** (it only listens for one
+   request at a time), then press Enter in the script window.
 
-```bash
-curl -X POST http://localhost:5678/webhook-test/lead-triage ^
-  -H "Content-Type: application/json" ^
-  -d "{\"first_name\":\"Marguerite\",\"last_name\":\"Okonkwo\",\"email\":\"m.okonkwo@ravensbourne-logistics.example\",\"company\":\"Ravensbourne Logistics\",\"message\":\"I am the VP of Customer Experience here. We run about 60 support agents across two sites and our current reporting is a weekly CSV someone builds by hand. I need to show the exec team resolution time by queue before our Q4 planning offsite, which is in three weeks. Can we get a demo this week?\"}"
-```
+**Expected second result — tier A:** same company, a VP with budget and a three-week deadline.
 
-Same company, opposite outcome. That contrast is your demo.
+7. Check HubSpot: **Contacts** → you should see both people, with **Lead Triage Tier** set to D
+   and A. If the column isn't shown, use **Edit columns** to add it.
 
 ---
 
-## 8. Activate (optional)
+## 8. Activate — optional
 
-Toggle **Active** (top right) to make the webhook live at the production path
-`http://localhost:5678/webhook/lead-triage` — note `/webhook/` rather than `/webhook-test/`.
+Toggle **Active** in the top right to make the webhook live at
+`http://localhost:5678/webhook/lead-triage` — note `/webhook/`, not `/webhook-test/`.
 
-Only meaningful if something real is posting to it; for the demo video, **Test workflow** is fine
-and shows the data flowing node by node, which looks better on screen anyway.
+Only useful if something real is posting to it. For a demo video, **Test workflow** is better
+anyway: it animates each node as data flows through, which shows the architecture on screen.
 
 ---
 
-## If the import fails
+## If something fails
 
-The workflow JSON was written against n8n's standard format but **could not be verified against
-your exact version (2.42.7)** — node `typeVersion` numbers do drift between releases. If import
-errors or a node shows as unrecognised, build it by hand; it's five nodes:
+| symptom | cause |
+|---|---|
+| Script says *connection refused* | n8n isn't running — run `start-n8n.bat` |
+| Script says **404** | n8n isn't listening — click **Test workflow** first; it only accepts one request per click |
+| **Claude** node red, 401 | the `x-api-key` credential — check the header Name is exactly `x-api-key` |
+| **HubSpot** node red, 401 | the Authorization value needs `Bearer ` before the token |
+| **HubSpot** node red, 400 | property name mismatch — internal names must be `lead_triage_tier` and `lead_triage_reason` |
+| **Apply rubric** node red | open it and copy the error — the Code node body is also in `workflows/code-node.js` |
+| Import fails / node unrecognised | n8n version drift. Rebuild by hand — see the table below |
 
-| node | key settings |
+### Rebuilding by hand
+
+Five nodes, if import won't take:
+
+| node | settings |
 |---|---|
 | **Webhook** | POST, path `lead-triage`, Respond = *Using Respond to Webhook node* |
-| **HTTP Request** | POST `https://api.anthropic.com/v1/messages`, Header Auth → Anthropic API, header `anthropic-version: 2023-06-01`, JSON body (copy from the imported node or the JSON file) |
-| **Code** | paste the whole of `workflows/code-node.js` |
-| **HTTP Request** | POST `https://api.hubapi.com/crm/v3/objects/contacts`, Header Auth → HubSpot Private App, JSON body as in the file |
+| **HTTP Request** | POST `https://api.anthropic.com/v1/messages`, Header Auth → Anthropic API, add header `anthropic-version: 2023-06-01`, JSON body from the JSON file |
+| **Code** | paste all of `workflows/code-node.js` |
+| **HTTP Request** | POST `https://api.hubapi.com/crm/v3/objects/contacts`, Header Auth → HubSpot Private App, JSON body from the JSON file |
 | **Respond to Webhook** | respond with JSON |
-
-`workflows/code-node.js` exists precisely for this — it's the Code node body on its own.
 
 ---
 
-## What to tell me
+## Tell me
 
-Whatever happens — working, or the exact error text. If a node errors, open it and copy the
-message; n8n's errors name the node and the HTTP status, which is usually enough to pinpoint it.
+Whatever happens — working, or the exact error. If a node goes red, open it and copy the message;
+n8n names the node and the HTTP status, which is usually enough to pinpoint it.
