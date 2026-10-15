@@ -6,8 +6,8 @@ sample** rather than assumed to work.
 
 All data is synthetic. No real person, company, or customer record appears anywhere in this repo.
 
-**Status:** labelled and measured. Extraction beats the baseline by a wide margin; n8n/HubSpot
-orchestration not built yet.
+**Status:** complete. Rubric written, 50 leads hand-labelled, two designs measured, pipeline built
+and running end to end into HubSpot.
 
 ## Results
 
@@ -149,7 +149,12 @@ being wrong. So `data/leads.json` ships with no labels at all, and the ground tr
 | `scripts/label.template.html` | source for the above, before the data is inlined |
 | `scripts/build-labeler.mjs` | rebuilds `label.html` from the template + `leads.json` |
 | `scripts/test-rubric.mjs` | unit tests for the tier rules |
-| `workflows/` | n8n workflow exports (empty until the workflow exists) |
+| `workflows/lead-triage.json` | the n8n workflow, importable |
+| `workflows/code-node.js` | the Code node body alone, for rebuilding by hand |
+| `docs/architecture.md` | one-page architecture note |
+| `docs/demo-and-interview.md` | demo script and interview walkthrough |
+| `docs/SETUP.md` | step-by-step setup for HubSpot + n8n |
+| `results/` | raw eval output - the evidence behind every number above |
 
 ### The eval set
 
@@ -183,20 +188,28 @@ the rules — so labels cannot drift between the first lead and the fiftieth.
 
 ---
 
-## What happens next
+## What was done, in order
 
-1. **Label the 50** — `scripts/label.html`, about 20 minutes.
-2. **Baseline before building.** Measure "always predict the majority tier" against the labels.
-   Any system that cannot beat that is not working, no matter how plausible its rationales read.
-3. **Build the extraction** — one Claude call per lead returning the structured fields, scored by
-   the same executable rubric.
-4. **Measure**, reporting tier accuracy, adjacent-tier rate, **disqualifier recall** (the metric
-   that matters most — a missed disqualifier puts a job seeker into a sales queue), per-field
-   accuracy, and cost per lead.
-5. **Then n8n + HubSpot** — the orchestration, once the thing being orchestrated is known to work.
-6. **Report honestly**, including anything tried that didn't help.
+1. **Rubric written first** — ICP, extracted fields, tier rules, borderline cases decided in
+   advance.
+2. **50 synthetic leads hand-written**, deliberately unlabelled, including trap cases.
+3. **Labelled by a human** against the rubric, then validated: every tier re-derives from the seven
+   labelled facts. A QA pass corrected three labels whose category did not match its own definition.
+4. **Baseline established** — always predicting the majority tier scores 36.0%.
+5. **Two designs measured** — model-assigns-tier vs code-assigns-tier.
+6. **Model choice measured** — Sonnet 5 against Opus 5.
+7. **Pipeline built** on the winning design and run end to end into HubSpot.
 
----
+## Known limitations
+
+- **50 leads, one domain, synthetic.** Enough to find a real design flaw, not enough to certify
+  accuracy on live traffic.
+- **One labeller**, so there is no inter-rater agreement figure. Several residual errors are
+  genuine wording ambiguity rather than model mistakes.
+- **A rubric gap the eval surfaced:** a strong-fit prospect who has just signed with a competitor
+  (L47) has no category and falls to D through a downgrade. It should be a nurture tier.
+- **Not production-hardened** — n8n runs unsandboxed and uncontainerised, and there is no retry or
+  dead-letter path. See `docs/architecture.md`.
 
 ## Running it
 
