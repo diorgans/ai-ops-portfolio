@@ -24,31 +24,43 @@ Open **http://localhost:5678** and create the owner account if asked. It's local
 
 ---
 
-## 2. HubSpot — create a private app token
+## 2. HubSpot — create a Service Key
 
-A "private app" is HubSpot's name for an API token scoped to your own account.
+> **HubSpot changed this in late 2026.** Private apps were consolidated into a "Legacy Apps" page
+> and then removed for newer accounts. The replacement for "I just want a token to call the API
+> from my own code" is a **Service Key**. If your account offers Legacy Apps, that still works; if
+> it says *"Legacy apps aren't available on this account"*, use a Service Key as below.
+>
+> Service Keys are the right fit here: they're for data-only, system-to-system access, which is
+> exactly what this workflow does. They don't support webhooks or UI extensions — we don't need
+> either. The alternative, a project-based app, needs the HubSpot CLI and is far more setup than
+> this warrants.
 
 1. Go to **https://app.hubspot.com** and log in.
-2. Click the **gear icon** ⚙ in the top-right of the blue navigation bar. That's Settings.
-3. In the **left sidebar**, scroll down to the **Integrations** section and click **Private Apps**.
-   - Can't find it? There's a **search box at the top of that left sidebar** — type `private` and
-     it'll surface.
-4. Click the orange **Create a private app** button.
-5. On the **Basic Info** tab, set **Name** to `Lead Triage`. Description optional.
-6. Click the **Scopes** tab (next to Basic Info, near the top).
-7. In the **"Search scopes"** box type `contacts`.
-8. Tick these two checkboxes:
+2. Click the **gear icon** ⚙ in the top-right of the blue navigation bar.
+3. In the **left sidebar** go to **Integrations → Service Keys**.
+   - Depending on the account, it may sit under a **Development** section instead.
+   - Fastest route either way: the **search box at the top of the settings sidebar** — type
+     `service`.
+4. Click **Create a service key**.
+5. Give it a name: `Lead Triage`.
+6. Add **scopes**. Search for `contacts` and select:
    - `crm.objects.contacts.read`
    - `crm.objects.contacts.write`
-9. Click **Create app** (top right).
-10. A dialog warns you about the token — click **Continue creating**.
-11. You'll land on the app's page. Click **Show token**, then **Copy**.
 
-The token starts with `pat-`. **Paste it into Notepad for now** — you'll need it in step 4, and
-HubSpot only shows it once.
+   Grant only these two. Least privilege — a key that can only read and write contacts can't do
+   damage elsewhere if it leaks.
+7. Review, then **Create**.
+8. **Copy the key immediately** and paste it into Notepad. HubSpot may not show it again.
 
-> Don't see "Private Apps" at all? It needs Super Admin permission on the account. On your own
-> developer account you are, so it should be there.
+> Needs **Super Admin** or Developer tools access. On your own developer account you have it.
+>
+> If the key is ever exposed, there's a **Rotate** button — use that rather than deleting and
+> rebuilding the integration.
+
+**Sources:** [Service Keys announcement](https://developers.hubspot.com/blog/hubspot-service-keys-the-right-api-credential-for-data-integrations) ·
+[Legacy private apps](https://developers.hubspot.com/docs/apps/legacy-apps/private-apps/overview) ·
+[Developer platform overview](https://developers.hubspot.com/docs/apps/developer-platform/overview)
 
 ---
 
@@ -118,10 +130,13 @@ the dialog (it'll say something like *Header Auth account*) and type over it. Cl
 | field | value |
 |---|---|
 | Name | `Authorization` |
-| Value | `Bearer pat-xxxxxxxx` |
+| Value | `Bearer <your service key>` |
 
-The value is the literal word **`Bearer`**, then **one space**, then your `pat-` token. Rename it
-to **`HubSpot Private App`**. Save.
+The value is the literal word **`Bearer`**, then **one space**, then the Service Key from step 2.
+Rename the credential to **`HubSpot Private App`** (the workflow expects that name) and Save.
+
+> Service Keys authenticate exactly like the old private-app tokens — same `Authorization: Bearer`
+> header — so nothing else in the workflow changes.
 
 > Open `.anthropic_key` with Notepad to copy the key. Don't paste either secret into a chat window
 > or a file in the repo.
@@ -206,7 +221,7 @@ anyway: it animates each node as data flows through, which shows the architectur
 | Script says *connection refused* | n8n isn't running — run `start-n8n.bat` |
 | Script says **404** | n8n isn't listening — click **Test workflow** first; it only accepts one request per click |
 | **Claude** node red, 401 | the `x-api-key` credential — check the header Name is exactly `x-api-key` |
-| **HubSpot** node red, 401 | the Authorization value needs `Bearer ` before the token |
+| **HubSpot** node red, 401 | the Authorization value needs `Bearer ` before the service key |
 | **HubSpot** node red, 400 | property name mismatch — internal names must be `lead_triage_tier` and `lead_triage_reason` |
 | **Apply rubric** node red | open it and copy the error — the Code node body is also in `workflows/code-node.js` |
 | Import fails / node unrecognised | n8n version drift. Rebuild by hand — see the table below |

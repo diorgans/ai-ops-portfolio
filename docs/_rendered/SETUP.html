@@ -1,0 +1,200 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SETUP.md</title><style>
+:root{--bg:#fbfbf9;--panel:#fff;--ink:#1b1b19;--muted:#63635e;--line:#e4e4de;--accent:#2f5d50;--codebg:#f2f2ee}
+@media (prefers-color-scheme:dark){:root{--bg:#15151a;--panel:#1d1d22;--ink:#ededea;--muted:#9d9d97;--line:#32323a;--accent:#7fbda9;--codebg:#24242b}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.65 ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}
+main{max-width:860px;margin:0 auto;padding:36px 20px 100px}
+h1{font-size:28px;letter-spacing:-.02em;margin:0 0 20px}
+h2{font-size:21px;margin:38px 0 12px;padding-top:18px;border-top:1px solid var(--line)}
+h3{font-size:17px;margin:26px 0 8px}
+p{margin:12px 0}
+a{color:var(--accent)}
+code{background:var(--codebg);padding:2px 6px;border-radius:5px;font:13.5px/1.5 ui-monospace,Consolas,monospace}
+pre{background:var(--codebg);padding:14px 16px;border-radius:9px;overflow-x:auto;border:1px solid var(--line)}
+pre code{background:none;padding:0;font-size:13px;white-space:pre}
+table{border-collapse:collapse;width:100%;margin:16px 0;font-size:14.5px;display:block;overflow-x:auto}
+th,td{border:1px solid var(--line);padding:8px 11px;text-align:left;vertical-align:top}
+th{background:var(--codebg);font-weight:600}
+blockquote{margin:16px 0;padding:12px 16px;border-left:3px solid var(--accent);background:var(--panel);border-radius:0 8px 8px 0;color:var(--muted)}
+blockquote code{background:var(--codebg)}
+hr{border:0;border-top:1px solid var(--line);margin:28px 0}
+ol,ul{padding-left:24px}li{margin:6px 0}
+strong{font-weight:650}
+</style></head><body><main>
+<h1>Setup — your steps, in detail</h1>
+<p>Everything that could be built for you is built. These are the parts that need your accounts.</p>
+<p>About 25 minutes. Steps 2–3 are HubSpot admin, 4–8 are n8n.</p>
+<hr>
+<h2>1. Start n8n</h2>
+<p>Double-click <strong><code>start-n8n.bat</code></strong> in the project folder.</p>
+<p>Wait for <strong>"Editor is now accessible via http://localhost:5678"</strong> — about a minute on first run. Leave that console window open; closing it stops n8n.</p>
+<p>Open <strong>http://localhost:5678</strong> and create the owner account if asked. It's local only.</p>
+<blockquote>Seeing a <em>"Failed to start Python task runner"</em> message and a list of deprecation warnings is normal. The line that matters is <strong><code>Registered runner "JS Task Runner"</code></strong> — that's the one the workflow needs.  If n8n offers to configure a <strong>sandbox service</strong> asking for a URL and API key: <strong>skip it.</strong> It needs Docker and is optional.</blockquote>
+<hr>
+<h2>2. HubSpot — create a Service Key</h2>
+<blockquote><strong>HubSpot changed this in late 2026.</strong> Private apps were consolidated into a "Legacy Apps" page and then removed for newer accounts. The replacement for "I just want a token to call the API from my own code" is a <strong>Service Key</strong>. If your account offers Legacy Apps, that still works; if it says <em>"Legacy apps aren't available on this account"</em>, use a Service Key as below.  Service Keys are the right fit here: they're for data-only, system-to-system access, which is exactly what this workflow does. They don't support webhooks or UI extensions — we don't need either. The alternative, a project-based app, needs the HubSpot CLI and is far more setup than this warrants.</blockquote>
+<ol>
+<li>Go to <strong>https://app.hubspot.com</strong> and log in.</li>
+<li>Click the <strong>gear icon</strong> ⚙ in the top-right of the blue navigation bar.</li>
+<li>In the <strong>left sidebar</strong> go to <strong>Integrations → Service Keys</strong>.</li>
+</ol>
+<ul>
+<li>Depending on the account, it may sit under a <strong>Development</strong> section instead.</li>
+<li>Fastest route either way: the <strong>search box at the top of the settings sidebar</strong> — type</li>
+</ul>
+<p>     <code>service</code>.</p>
+<ol>
+<li>Click <strong>Create a service key</strong>.</li>
+<li>Give it a name: <code>Lead Triage</code>.</li>
+<li>Add <strong>scopes</strong>. Search for <code>contacts</code> and select:</li>
+</ol>
+<ul>
+<li><code>crm.objects.contacts.read</code></li>
+<li><code>crm.objects.contacts.write</code></li>
+</ul>
+<p>   Grant only these two. Least privilege — a key that can only read and write contacts can't do    damage elsewhere if it leaks.</p>
+<ol>
+<li>Review, then <strong>Create</strong>.</li>
+<li><strong>Copy the key immediately</strong> and paste it into Notepad. HubSpot may not show it again.</li>
+</ol>
+<blockquote>Needs <strong>Super Admin</strong> or Developer tools access. On your own developer account you have it.  If the key is ever exposed, there's a <strong>Rotate</strong> button — use that rather than deleting and rebuilding the integration.</blockquote>
+<p><strong>Sources:</strong> <a href="https://developers.hubspot.com/blog/hubspot-service-keys-the-right-api-credential-for-data-integrations">Service Keys announcement</a> · <a href="https://developers.hubspot.com/docs/apps/legacy-apps/private-apps/overview">Legacy private apps</a> · <a href="https://developers.hubspot.com/docs/apps/developer-platform/overview">Developer platform overview</a></p>
+<hr>
+<h2>3. HubSpot — add two contact properties</h2>
+<p>The workflow writes the tier onto the contact record, so the fields have to exist first.</p>
+<ol>
+<li>Still in <strong>Settings</strong> (⚙).</li>
+<li>Left sidebar → <strong>Data Management</strong> → <strong>Properties</strong>.</li>
+</ol>
+<ul>
+<li>Or type <code>properties</code> in that sidebar search box.</li>
+</ul>
+<ol>
+<li>At the top there's a dropdown reading <strong>"Select an object"</strong>. Choose <strong>Contact properties</strong>.</li>
+<li>Click <strong>Create property</strong> (top right).</li>
+<li>Fill in:</li>
+</ol>
+<table><thead><tr><th>field</th><th>value</th></tr></thead><tbody>
+<tr><td>Object type</td><td>Contact</td></tr>
+<tr><td>Group</td><td>Contact information (any group is fine)</td></tr>
+<tr><td>Label</td><td><code>Lead Triage Tier</code></td></tr>
+</tbody></table>
+<ol>
+<li><strong>Check the internal name.</strong> Under the Label box there's small grey text showing the internal</li>
+</ol>
+<p>   name HubSpot generated, with an edit (pencil) icon. It must read exactly:</p>
+<p>   ``<code>    lead_triage_tier    </code>``</p>
+<p>   If it reads anything else, click the pencil and correct it. <strong>This is the one thing that must    match exactly</strong> — it's what the API writes to.</p>
+<ol>
+<li>Click <strong>Next</strong>. For <strong>Field type</strong> choose <strong>Single-line text</strong>.</li>
+<li>Click <strong>Create</strong>.</li>
+</ol>
+<p>Now repeat steps 4–8 for the second property:</p>
+<table><thead><tr><th>field</th><th>value</th></tr></thead><tbody>
+<tr><td>Label</td><td><code>Lead Triage Reason</code></td></tr>
+<tr><td>Internal name</td><td><code>lead_triage_reason</code></td></tr>
+<tr><td>Field type</td><td>Single-line text</td></tr>
+</tbody></table>
+<hr>
+<h2>4. n8n — create two credentials</h2>
+<p>n8n stores secrets separately from workflows, which is why importing the workflow doesn't bring them along.</p>
+<ol>
+<li>In n8n, find <strong>Credentials</strong> in the left sidebar. In this version it may be a <strong>tab</strong> at the top</li>
+</ol>
+<p>   of the <strong>Overview</strong> page rather than its own sidebar item — look for <em>Workflows | Credentials |    Executions</em>.</p>
+<ol>
+<li>Click <strong>Add credential</strong> (or <strong>Create Credential</strong>).</li>
+<li>In the search box type <strong><code>Header Auth</code></strong> and pick <strong>Header Auth</strong>.</li>
+</ol>
+<p><strong>Credential one — Anthropic:</strong></p>
+<table><thead><tr><th>field</th><th>value</th></tr></thead><tbody>
+<tr><td>Name</td><td><code>x-api-key</code></td></tr>
+<tr><td>Value</td><td>your Anthropic key — it's in <code>C:\Users\nchen\Downloads\lead-triage\.anthropic_key</code></td></tr>
+</tbody></table>
+<p>Rename the credential itself to <strong><code>Anthropic API</code></strong> — click the credential's title at the top of the dialog (it'll say something like <em>Header Auth account</em>) and type over it. Click <strong>Save</strong>.</p>
+<p><strong>Credential two — HubSpot:</strong> repeat, new Header Auth credential:</p>
+<table><thead><tr><th>field</th><th>value</th></tr></thead><tbody>
+<tr><td>Name</td><td><code>Authorization</code></td></tr>
+<tr><td>Value</td><td><code>Bearer &lt;your service key&gt;</code></td></tr>
+</tbody></table>
+<p>The value is the literal word <strong><code>Bearer</code></strong>, then <strong>one space</strong>, then the Service Key from step 2. Rename the credential to <strong><code>HubSpot Private App</code></strong> (the workflow expects that name) and Save.</p>
+<blockquote>Service Keys authenticate exactly like the old private-app tokens — same <code>Authorization: Bearer</code> header — so nothing else in the workflow changes.</blockquote>
+<blockquote>Open <code>.anthropic_key</code> with Notepad to copy the key. Don't paste either secret into a chat window or a file in the repo.</blockquote>
+<hr>
+<h2>5. n8n — import the workflow</h2>
+<ol>
+<li>Left sidebar → <strong>Workflows</strong> → <strong>Create Workflow</strong> (this opens a blank canvas).</li>
+<li>In the <strong>top-right of the canvas</strong>, click the <strong>⋯</strong> (three dots) menu.</li>
+<li>Choose <strong>Import from File…</strong></li>
+<li>Select:</li>
+</ol>
+<p>   ``<code>    C:\Users\nchen\Downloads\lead-triage\workflows\lead-triage.json    </code>``</p>
+<p>Five nodes should appear, left to right:</p>
+<pre><code>
+Webhook → Claude — extract facts → Apply rubric (code) → HubSpot — create contact → Respond
+</code></pre>
+<p>Press <strong>Ctrl+S</strong> to save. Name it anything.</p>
+<hr>
+<h2>6. n8n — attach the credentials to the nodes</h2>
+<p>Two nodes need a credential selected. Importing never carries secrets.</p>
+<ol>
+<li><strong>Double-click</strong> the node <strong>Claude — extract facts</strong>.</li>
+<li>Near the top there's <strong>Credential for Header Auth</strong> with a dropdown. Choose <strong>Anthropic API</strong>.</li>
+<li>Close the node (click the canvas, or <strong>Back to canvas</strong> top-left).</li>
+<li><strong>Double-click</strong> <strong>HubSpot — create contact</strong>.</li>
+<li>Same dropdown → choose <strong>HubSpot Private App</strong>.</li>
+<li>Close it, then <strong>Ctrl+S</strong> to save.</li>
+</ol>
+<hr>
+<h2>7. Test it</h2>
+<ol>
+<li>In n8n, click <strong>Test workflow</strong> at the bottom of the canvas. It now waits for one request.</li>
+<li>In Explorer, <strong>right-click <code>test-webhook.ps1</code></strong> → <strong>Run with PowerShell</strong>.</li>
+<li>The script pauses and tells you to press Enter — press it. It sends the first lead.</li>
+<li>Watch the n8n canvas: each node should turn green in turn.</li>
+<li>The script prints the response.</li>
+</ol>
+<p><strong>Expected first result — tier D:</strong></p>
+<pre><code>
+{ "tier": "D", "reason": "Rule 1 — job seeker overrides fit.", "facts": { "disqualifier": "job_seeker", ... } }
+</code></pre>
+<p>That's a support team lead at an <strong>ideal customer</strong> — and the correct answer is still D, because he's asking for a job. That's the whole point of the project.</p>
+<ol>
+<li>The script then waits again. <strong>Click "Test workflow" in n8n once more</strong> (it only listens for one</li>
+</ol>
+<p>   request at a time), then press Enter in the script window.</p>
+<p><strong>Expected second result — tier A:</strong> same company, a VP with budget and a three-week deadline.</p>
+<ol>
+<li>Check HubSpot: <strong>Contacts</strong> → you should see both people, with <strong>Lead Triage Tier</strong> set to D</li>
+</ol>
+<p>   and A. If the column isn't shown, use <strong>Edit columns</strong> to add it.</p>
+<hr>
+<h2>8. Activate — optional</h2>
+<p>Toggle <strong>Active</strong> in the top right to make the webhook live at <code>http://localhost:5678/webhook/lead-triage</code> — note <code>/webhook/</code>, not <code>/webhook-test/</code>.</p>
+<p>Only useful if something real is posting to it. For a demo video, <strong>Test workflow</strong> is better anyway: it animates each node as data flows through, which shows the architecture on screen.</p>
+<hr>
+<h2>If something fails</h2>
+<table><thead><tr><th>symptom</th><th>cause</th></tr></thead><tbody>
+<tr><td>Script says <em>connection refused</em></td><td>n8n isn't running — run <code>start-n8n.bat</code></td></tr>
+<tr><td>Script says <strong>404</strong></td><td>n8n isn't listening — click <strong>Test workflow</strong> first; it only accepts one request per click</td></tr>
+<tr><td><strong>Claude</strong> node red, 401</td><td>the <code>x-api-key</code> credential — check the header Name is exactly <code>x-api-key</code></td></tr>
+<tr><td><strong>HubSpot</strong> node red, 401</td><td>the Authorization value needs <code>Bearer </code> before the service key</td></tr>
+<tr><td><strong>HubSpot</strong> node red, 400</td><td>property name mismatch — internal names must be <code>lead_triage_tier</code> and <code>lead_triage_reason</code></td></tr>
+<tr><td><strong>Apply rubric</strong> node red</td><td>open it and copy the error — the Code node body is also in <code>workflows/code-node.js</code></td></tr>
+<tr><td>Import fails / node unrecognised</td><td>n8n version drift. Rebuild by hand — see the table below</td></tr>
+</tbody></table>
+<h3>Rebuilding by hand</h3>
+<p>Five nodes, if import won't take:</p>
+<table><thead><tr><th>node</th><th>settings</th></tr></thead><tbody>
+<tr><td><strong>Webhook</strong></td><td>POST, path <code>lead-triage</code>, Respond = <em>Using Respond to Webhook node</em></td></tr>
+<tr><td><strong>HTTP Request</strong></td><td>POST <code>https://api.anthropic.com/v1/messages</code>, Header Auth → Anthropic API, add header <code>anthropic-version: 2023-06-01</code>, JSON body from the JSON file</td></tr>
+<tr><td><strong>Code</strong></td><td>paste all of <code>workflows/code-node.js</code></td></tr>
+<tr><td><strong>HTTP Request</strong></td><td>POST <code>https://api.hubapi.com/crm/v3/objects/contacts</code>, Header Auth → HubSpot Private App, JSON body from the JSON file</td></tr>
+<tr><td><strong>Respond to Webhook</strong></td><td>respond with JSON</td></tr>
+</tbody></table>
+<hr>
+<h2>Tell me</h2>
+<p>Whatever happens — working, or the exact error. If a node goes red, open it and copy the message; n8n names the node and the HTTP status, which is usually enough to pinpoint it.</p>
+</main></body></html>
