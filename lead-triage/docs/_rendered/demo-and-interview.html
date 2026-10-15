@@ -1,0 +1,54 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>demo-and-interview.md</title><style>
+:root{--bg:#fbfbf9;--panel:#fff;--ink:#1b1b19;--muted:#63635e;--line:#e4e4de;--accent:#2f5d50;--codebg:#f2f2ee}
+@media (prefers-color-scheme:dark){:root{--bg:#15151a;--panel:#1d1d22;--ink:#ededea;--muted:#9d9d97;--line:#32323a;--accent:#7fbda9;--codebg:#24242b}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.65 ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}
+main{max-width:860px;margin:0 auto;padding:36px 20px 100px}
+h1{font-size:28px;letter-spacing:-.02em;margin:0 0 20px}
+h2{font-size:21px;margin:38px 0 12px;padding-top:18px;border-top:1px solid var(--line)}
+h3{font-size:17px;margin:26px 0 8px}
+p{margin:12px 0}
+a{color:var(--accent)}
+code{background:var(--codebg);padding:2px 6px;border-radius:5px;font:13.5px/1.5 ui-monospace,Consolas,monospace}
+pre{background:var(--codebg);padding:14px 16px;border-radius:9px;overflow-x:auto;border:1px solid var(--line)}
+pre code{background:none;padding:0;font-size:13px;white-space:pre}
+table{border-collapse:collapse;width:100%;margin:16px 0;font-size:14.5px;display:block;overflow-x:auto}
+th,td{border:1px solid var(--line);padding:8px 11px;text-align:left;vertical-align:top}
+th{background:var(--codebg);font-weight:600}
+blockquote{margin:16px 0;padding:12px 16px;border-left:3px solid var(--accent);background:var(--panel);border-radius:0 8px 8px 0;color:var(--muted)}
+blockquote code{background:var(--codebg)}
+hr{border:0;border-top:1px solid var(--line);margin:28px 0}
+ol,ul{padding-left:24px}li{margin:6px 0}
+strong{font-weight:650}
+</style></head><body><main>
+<h1>Demo Script &amp; Interview Walkthrough</h1>
+<h2>Part 1 — Demo video script (~3 minutes)</h2>
+<p>Record with n8n open and <strong>Test workflow</strong> running, so nodes light up as data flows. That animation does the explaining for you.</p>
+<p><strong>[0:00–0:20] The problem</strong> Screen: the n8n canvas, five nodes. Say: <em>"Inbound sales enquiries arrive as free text. Someone has to read each one and decide whether it's worth a salesperson's time. This pipeline does that triage automatically — and more importantly, I can tell you how accurate it is."</em></p>
+<p><strong>[0:20–0:50] One lead through the system</strong> Run <code>test-webhook.ps1</code>, send L01 — the VP. Say: <em>"A VP of Customer Experience, 60 agents, a deadline three weeks out. Claude reads it and returns seven structured facts. Then "</em> — point at the Code node — <em>"code applies the scoring rules and assigns a tier. It comes back A, with the quote that justified it."</em> Show the HubSpot contact appearing with <strong>Lead Triage Tier = A</strong>.</p>
+<p><strong>[0:50–1:20] The same company, the opposite answer</strong> Send L04. Say: <em>"Same company. Also a support professional. But read what he actually wants —"</em> highlight</p>
+<p><em>"I saw you're hiring"</em> — <em>"he's asking for a job. The system returns D. The company is an ideal customer; this person is not a buyer. That distinction is the whole problem, and it's the one a keyword filter gets wrong."</em></p>
+<p><strong>[1:20–2:10] How I know it works</strong> Screen: <code>docs/RUBRIC.md</code>, then the results table. Say: <em>"I wrote the scoring rubric first, generated 50 synthetic leads, and hand-labelled all 50 before writing any extraction code — so the system was built against a fixed target rather than me adjusting the target to flatter it. The baseline, always guessing the most common tier, is 36%. This scores <strong>82.7%</strong>, and catches <strong>24 out of 24</strong> disqualifiers with no false positives."</em></p>
+<p><strong>[2:10–2:45] The finding</strong> Screen: the two-arm comparison. Say: <em>"I tested two designs. One where Claude assigns the tier itself: 71%. One where Claude only reports facts and code applies the rules: 83%. The gap isn't extraction — both read the message equally well. It's that the model follows a single explicit rule perfectly and multi-step rules badly. It was rounding hard disqualifications up to a softer tier. So the rule-following moved into code, where it's deterministic and unit-tested."</em></p>
+<p><strong>[2:45–3:00] Cost and honesty</strong> Say: <em>"I also checked whether it needed the expensive model. Sonnet matched Opus at a third the cost per lead, so that's what ships. Four-tenths of a cent per lead. Fifty leads, one domain, synthetic data — enough to find a real design flaw, not enough to certify it for live traffic."</em></p>
+<hr>
+<h2>Part 2 — Interview walkthrough (say this out loud)</h2>
+<p><strong>"Tell me about a project."</strong></p>
+<blockquote>I built a lead-triage pipeline — inbound sales enquiries come in as free text, Claude extracts structured facts, scoring rules assign a priority tier, and it writes to HubSpot through n8n.  The part I'd actually want to talk about is that I measured it. I wrote the scoring rubric and hand-labelled fifty leads <em>before</em> writing any extraction code, so I couldn't quietly move the target to match whatever the system did. The naive baseline — always guess the most common tier — is 36%. The system scores 83%.  The interesting result came from testing two designs. In one, Claude assigns the tier itself: 71%. In the other, Claude only reports seven facts and ordinary code applies the rules: 83%. Both read the message equally well, so it wasn't an extraction problem.  When I broke down the errors, the model applied a single absolute rule — "a disqualified lead is always the lowest tier" — perfectly, 24 out of 24. But the rules that needed a table lookup, then a conditional adjustment, then a cap, it got wrong 24 times out of 30. It was rounding hard disqualifications up to a softer tier, which in a sales queue is the expensive direction.  So the design principle is: use the model for perception and judgment, use code for bookkeeping. The rubric is executable — the same implementation drives the labelling tool, the eval, and the production workflow, so the deployed thing can't drift from the measured thing.</blockquote>
+<p><strong>Follow-ups to have ready:</strong></p>
+<p><em>"How do you know the labels are right?"</em></p>
+<blockquote>I don't entirely, and that's a real limitation. One labeller, so there's no inter-rater agreement figure. I did a QA pass and found three labels where the category didn't match its own definition — one lead said "we're evaluating three vendors" and got labelled as a vendor pitch, when she was actually a buyer. Those mattered because disqualifier recall is a headline metric, and scoring the model against a definition the labels didn't follow would have reported a labelling problem as a model failure. Some remaining errors are genuine wording ambiguity, not model mistakes.</blockquote>
+<p><em>"Why not use the best model?"</em></p>
+<blockquote>I checked. Sonnet scored 86% against Opus's 83% — about 0.6 standard errors, so statistically indistinguishable — at a third of the cost per lead. Disqualifier recall stayed perfect on both. The honest claim is "no measurable difference at a third the price", not "the cheap one is better." At a thousand leads a month that's four dollars versus eleven-fifty.</blockquote>
+<p><em>"What would you do differently?"</em></p>
+<blockquote>Three things. I ran three passes per configuration when one would have given the same answer — that was caution carried over from a previous project where the bug was genuinely intermittent, and it cost three times as much for no extra information. Second, I'd get a second labeller. Third, the rubric has a gap I found through the eval: a strong-fit prospect who just signed with a competitor falls to the lowest tier because there's no "nurture" category. That's a rubric bug the measurement surfaced, not a model bug.</blockquote>
+<p><em>"What broke along the way?"</em></p>
+<blockquote>The useful one: my rubric contradicted itself. It stated that the top tier requires a director or above, but a budget-signal modifier let a manager reach it anyway. I only found that because I'd made the rubric executable and written tests for it — reading the prose hadn't caught it. That's the argument for treating a scoring definition as code rather than a document.</blockquote>
+<p><strong>Avoid saying:</strong></p>
+<ul>
+<li>"It's 83% accurate" without the baseline. 83% means nothing until you say 36% is the floor.</li>
+<li>"It works." Say what was measured, on how many examples, and what that doesn't cover.</li>
+</ul>
+</main></body></html>

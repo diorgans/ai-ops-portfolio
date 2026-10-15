@@ -1,0 +1,172 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>README.md</title><style>
+:root{--bg:#fbfbf9;--panel:#fff;--ink:#1b1b19;--muted:#63635e;--line:#e4e4de;--accent:#2f5d50;--codebg:#f2f2ee}
+@media (prefers-color-scheme:dark){:root{--bg:#15151a;--panel:#1d1d22;--ink:#ededea;--muted:#9d9d97;--line:#32323a;--accent:#7fbda9;--codebg:#24242b}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.65 ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}
+main{max-width:860px;margin:0 auto;padding:36px 20px 100px}
+h1{font-size:28px;letter-spacing:-.02em;margin:0 0 20px}
+h2{font-size:21px;margin:38px 0 12px;padding-top:18px;border-top:1px solid var(--line)}
+h3{font-size:17px;margin:26px 0 8px}
+p{margin:12px 0}
+a{color:var(--accent)}
+code{background:var(--codebg);padding:2px 6px;border-radius:5px;font:13.5px/1.5 ui-monospace,Consolas,monospace}
+pre{background:var(--codebg);padding:14px 16px;border-radius:9px;overflow-x:auto;border:1px solid var(--line)}
+pre code{background:none;padding:0;font-size:13px;white-space:pre}
+table{border-collapse:collapse;width:100%;margin:16px 0;font-size:14.5px;display:block;overflow-x:auto}
+th,td{border:1px solid var(--line);padding:8px 11px;text-align:left;vertical-align:top}
+th{background:var(--codebg);font-weight:600}
+blockquote{margin:16px 0;padding:12px 16px;border-left:3px solid var(--accent);background:var(--panel);border-radius:0 8px 8px 0;color:var(--muted)}
+blockquote code{background:var(--codebg)}
+hr{border:0;border-top:1px solid var(--line);margin:28px 0}
+ol,ul{padding-left:24px}li{margin:6px 0}
+strong{font-weight:650}
+</style></head><body><main>
+<h1>Lead Triage — Automated Scoring with a Measured Accuracy Baseline</h1>
+<p>An n8n workflow that takes inbound sales enquiries, uses Claude to extract structured fields and assign a priority tier, writes the result to HubSpot, and is <strong>measured against a hand-labelled sample</strong> rather than assumed to work.</p>
+<p>All data is synthetic. No real person, company, or customer record appears anywhere in this repo.</p>
+<p><strong>Status:</strong> complete. Rubric written, 50 leads hand-labelled, two designs measured, pipeline built and running end to end into HubSpot.</p>
+<h2>Results</h2>
+<p>50 synthetic leads, hand-labelled, 3 runs per arm on <code>claude-opus-5</code> at <code>effort: low</code>. 300 calls, $3.46.</p>
+<table><thead><tr><th></th><th>tier accuracy</th><th>off-by-one</th><th>disqualifier recall</th></tr></thead><tbody>
+<tr><td>baseline — always predict the majority tier</td><td>36.0%</td><td>—</td><td>0%</td></tr>
+<tr><td><strong>derived</strong> — model reports facts, code applies the rubric</td><td><strong>82.7%</strong></td><td>23/150</td><td><strong>24/24</strong></td></tr>
+<tr><td><strong>direct</strong> — model reports facts <em>and</em> decides the tier</td><td>71.3%</td><td>40/150</td><td><strong>24/24</strong></td></tr>
+</tbody></table>
+<p>Taking the tier decision away from the model is worth <strong>+11.4 points</strong> (~2.4 standard errors). Across 3 runs only 1 of 50 leads varied in each arm, so the gap is systematic, not sampling noise.</p>
+<h3>Where the gap actually comes from</h3>
+<p>Not from the disqualifier traps — both arms caught <strong>24/24</strong> with <strong>zero</strong> false positives, including a support director at a perfect-fit company who was asking about jobs. The entire difference is in how true-D leads are reached:</p>
+<table><thead><tr><th>direct arm, true-D rows</th><th>n</th><th>predicted non-D</th></tr></thead><tbody>
+<tr><td>D because of a disqualifier (Rule 1 — one absolute override)</td><td>24</td><td><strong>0</strong></td></tr>
+<tr><td>D via Rules 2/3 (grid → modifier → cap)</td><td>30</td><td><strong>24</strong></td></tr>
+</tbody></table>
+<p><strong>The model applies a single explicit override rule perfectly and compositional rules badly.</strong> Rule 1 is one sentence with no arithmetic. Rules 2/3 require a table lookup, then a conditional modifier, then an authority cap — and there it quietly rounds D up to C. In a sales queue that is the expensive direction to be wrong in.</p>
+<p>The derived arm doesn't have the problem because the composition happens in code, where it is deterministic and unit-tested.</p>
+<h3>Does it need the expensive model?</h3>
+<p>No. The derived arm was re-run on <code>claude-sonnet-5</code> — 50 calls, $0.20.</p>
+<table><thead><tr><th>model</th><th>tier accuracy</th><th>disqualifier recall</th><th>cost per lead</th></tr></thead><tbody>
+<tr><td><code>claude-opus-5</code></td><td>82.7% (n=150)</td><td>24/24</td><td>$0.0115</td></tr>
+<tr><td><code>claude-sonnet-5</code></td><td><strong>86.0%</strong> (n=50)</td><td>8/8</td><td><strong>$0.0040</strong></td></tr>
+</tbody></table>
+<p>Sonnet scores 3.3 points higher at <strong>2.9× lower cost per lead</strong>. That difference is about 0.6 standard errors, so the honest claim is <strong>"no measurable difference at a third of the price"</strong>, not "Sonnet is better". Either way the cheaper model is the right production choice: at 1,000 leads a month that is $4.00 versus $11.50, for accuracy that is indistinguishable on this sample.</p>
+<p>Worth noting what did <em>not</em> degrade: disqualifier recall stayed perfect with zero false positives. The thing that would actually hurt — a job seeker reaching a sales queue — is not where the cheaper model gives anything up.</p>
+<h3>Which field errors actually matter</h3>
+<p>Field accuracy is near-identical between arms (same prompt), so the tier gap isn't an extraction problem. Within the derived arm, comparing rows where the tier was right against rows where it was wrong:</p>
+<table><thead><tr><th>field</th><th>disagreement when tier correct</th><th>when tier wrong</th></tr></thead><tbody>
+<tr><td><code>use_case_stated</code></td><td>4%</td><td><strong>58%</strong></td></tr>
+<tr><td><code>timeline</code></td><td>15%</td><td>35%</td></tr>
+<tr><td><code>seniority</code></td><td>5%</td><td>31%</td></tr>
+<tr><td><code>budget_signal</code></td><td>0%</td><td>23%</td></tr>
+<tr><td><code>support_function</code></td><td>24%</td><td>12%</td></tr>
+</tbody></table>
+<p><code>use_case_stated</code> is the dominant error source — and <code>support_function</code>, despite being the</p>
+<p><em>least</em> accurate field overall at 78%, barely propagates to the tier at all. Accuracy per field is the wrong thing to optimise; what matters is which field errors change the outcome.</p>
+<h3>Honest caveat on the error count</h3>
+<p>Several of the 26 derived-arm misses are <strong>label-vs-model disagreements on genuinely ambiguous wording</strong>, not clear model failures:</p>
+<ul>
+<li><strong>L03</strong> — <em>"I lead support operations"</em>: labelled <code>manager</code>, model said <code>director</code>. Defensible</li>
+</ul>
+<p>  either way, and it moves the tier.</p>
+<ul>
+<li><strong>L22</strong> — Norwegian, <em>"Jeg er leder for kundeservice"</em>: same ambiguity, in translation.</li>
+<li><strong>L47</strong> — a strong-fit prospect who <em>just signed with a competitor</em>. The rubric has no category</li>
+</ul>
+<p>  for "good lead, wrong time", so it falls to D through a downgrade. That is a gap in the rubric,   not a model error.</p>
+<p>Tightening the <code>use_case_stated</code> and <code>seniority</code> definitions is the highest-value next change, and it should be measured the same way rather than assumed to help.</p>
+<h3>What the eval itself cost, and what I'd do differently</h3>
+<table><thead><tr><th>run</th><th>calls</th><th>cost</th></tr></thead><tbody>
+<tr><td>Opus 5, both arms, 3 runs each</td><td>300</td><td>$3.46</td></tr>
+<tr><td>Sonnet 5, derived arm, 1 run</td><td>50</td><td>$0.20</td></tr>
+</tbody></table>
+<p><strong>Three runs per arm was 3× more than this task needed.</strong> Scored run-by-run, a single pass gives the same answer:</p>
+<table><thead><tr><th></th><th>derived</th><th>direct</th><th>gap</th></tr></thead><tbody>
+<tr><td>run 0 alone</td><td>82.0%</td><td>70.0%</td><td>12.0pp</td></tr>
+<tr><td>run 1 alone</td><td>84.0%</td><td>72.0%</td><td>12.0pp</td></tr>
+<tr><td>run 2 alone</td><td>82.0%</td><td>72.0%</td><td>10.0pp</td></tr>
+<tr><td>pooled</td><td>82.7%</td><td>71.3%</td><td>11.4pp</td></tr>
+</tbody></table>
+<p>The repetition was carried over from a previous project where the failure <em>was</em> stochastic and a single run per item genuinely told you nothing. Here only 1 of 50 leads varied across runs, so the extra passes bought precision nobody needed and cost 3× as much.</p>
+<p>The rule that falls out of it: <strong>pilot with one run, measure the run-to-run variance, and only add passes if the variance is large enough to change the conclusion.</strong></p>
+<hr>
+<h2>The method, and why this order</h2>
+<p>The eval comes first. The rubric, the sample, and the labels are all finished <strong>before</strong> any extraction prompt is written, so the system is built against a fixed target instead of the target quietly being adjusted to flatter whatever the system happens to do.</p>
+<p>This ordering comes from a previous project where it mattered concretely: measuring a screenshot grader first revealed it was correct <strong>34%</strong> of the time on its main task, and the obvious fix — a stronger prompt instruction — made it <em>worse</em> (34% → 24%). Only measurement distinguished the two. Building the eval afterwards would have produced a number chosen to look good.</p>
+<h3>Labels are produced by a human, not a model</h3>
+<p>The system under test is Claude. If the labels were also generated by a model, the eval would measure <strong>self-agreement</strong>, not correctness — a system can agree with itself enthusiastically while being wrong. So <code>data/leads.json</code> ships with no labels at all, and the ground truth in <code>data/labels.json</code> is produced by a person working through <code>docs/RUBRIC.md</code>.</p>
+<hr>
+<h2>What's here</h2>
+<table><thead><tr><th>path</th><th>what it is</th></tr></thead><tbody>
+<tr><td><code>docs/RUBRIC.md</code></td><td>the scoring definition — ICP, extracted fields, tier rules, borderline cases decided in advance</td></tr>
+<tr><td><code>data/leads.json</code></td><td>50 synthetic inbound enquiries, hand-written, deliberately unlabelled</td></tr>
+<tr><td><code>scripts/label.html</code></td><td>a local labelling tool — open it in a browser, no server needed</td></tr>
+<tr><td><code>scripts/label.template.html</code></td><td>source for the above, before the data is inlined</td></tr>
+<tr><td><code>scripts/build-labeler.mjs</code></td><td>rebuilds <code>label.html</code> from the template + <code>leads.json</code></td></tr>
+<tr><td><code>scripts/test-rubric.mjs</code></td><td>unit tests for the tier rules</td></tr>
+<tr><td><code>workflows/lead-triage.json</code></td><td>the n8n workflow, importable</td></tr>
+<tr><td><code>workflows/code-node.js</code></td><td>the Code node body alone, for rebuilding by hand</td></tr>
+<tr><td><code>docs/architecture.md</code></td><td>one-page architecture note</td></tr>
+<tr><td><code>docs/demo-and-interview.md</code></td><td>demo script and interview walkthrough</td></tr>
+<tr><td><code>docs/SETUP.md</code></td><td>step-by-step setup for HubSpot + n8n</td></tr>
+<tr><td><code>results/</code></td><td>raw eval output - the evidence behind every number above</td></tr>
+</tbody></table>
+<h3>The eval set</h3>
+<p>50 enquiries, written by hand rather than templated — templated data is too uniform and makes an eval look better than it is. The set deliberately includes cases designed to be hard:</p>
+<ul>
+<li>a support director at a perfect-fit company who is <strong>asking about jobs</strong> (the rubric says D; the</li>
+</ul>
+<p>  company profile says A)</p>
+<ul>
+<li>a competitor doing market research under the guise of a demo request</li>
+<li>an agency enquiring on behalf of an unnamed client</li>
+<li>two non-English enquiries</li>
+<li>one-line messages with no stated use case</li>
+<li>a lead who is a great fit but <strong>just signed with a competitor</strong></li>
+<li>a procurement contact with no requirement detail</li>
+</ul>
+<p>Email domains all use the RFC 2606 reserved <code>.example</code> TLD, so no synthetic record can collide with a real domain.</p>
+<h3>The rubric is executable, not just prose</h3>
+<p><code>docs/RUBRIC.md</code> defines the tier rules; the labelling tool implements them, and <code>scripts/test-rubric.mjs</code> tests that implementation with 25 cases.</p>
+<p>That caught a real contradiction immediately. The rubric states <em>"A cannot be reached without seniority of director or above"</em>, while the budget-signal modifier allowed a manager with an immediate timeline to reach A. Prose alone did not surface it; a failing test did. The fix is an authority gate applied after the modifiers.</p>
+<p>The side effect is that a labeller only judges <strong>seven facts</strong> per lead, and the tier follows from the rules — so labels cannot drift between the first lead and the fiftieth.</p>
+<hr>
+<h2>What was done, in order</h2>
+<ol>
+<li><strong>Rubric written first</strong> — ICP, extracted fields, tier rules, borderline cases decided in</li>
+</ol>
+<p>   advance.</p>
+<ol>
+<li><strong>50 synthetic leads hand-written</strong>, deliberately unlabelled, including trap cases.</li>
+<li><strong>Labelled by a human</strong> against the rubric, then validated: every tier re-derives from the seven</li>
+</ol>
+<p>   labelled facts. A QA pass corrected three labels whose category did not match its own definition.</p>
+<ol>
+<li><strong>Baseline established</strong> — always predicting the majority tier scores 36.0%.</li>
+<li><strong>Two designs measured</strong> — model-assigns-tier vs code-assigns-tier.</li>
+<li><strong>Model choice measured</strong> — Sonnet 5 against Opus 5.</li>
+<li><strong>Pipeline built</strong> on the winning design and run end to end into HubSpot.</li>
+</ol>
+<h2>Known limitations</h2>
+<ul>
+<li><strong>50 leads, one domain, synthetic.</strong> Enough to find a real design flaw, not enough to certify</li>
+</ul>
+<p>  accuracy on live traffic.</p>
+<ul>
+<li><strong>One labeller</strong>, so there is no inter-rater agreement figure. Several residual errors are</li>
+</ul>
+<p>  genuine wording ambiguity rather than model mistakes.</p>
+<ul>
+<li><strong>A rubric gap the eval surfaced:</strong> a strong-fit prospect who has just signed with a competitor</li>
+</ul>
+<p>  (L47) has no category and falls to D through a downgrade. It should be a nurture tier.</p>
+<ul>
+<li><strong>Not production-hardened</strong> — n8n runs unsandboxed and uncontainerised, and there is no retry or</li>
+</ul>
+<p>  dead-letter path. See <code>docs/architecture.md</code>.</p>
+<h2>Running it</h2>
+<pre><code>
+node scripts/test-rubric.mjs      # verify the tier rules
+node scripts/build-labeler.mjs    # rebuild label.html after editing leads or rules
+</code></pre>
+<p>Then open <code>scripts/label.html</code> in a browser. Progress is saved locally as you go, so it can be done in more than one sitting; <strong>Export</strong> writes <code>labels.json</code>.</p>
+</main></body></html>

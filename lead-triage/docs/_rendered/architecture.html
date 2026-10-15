@@ -1,0 +1,122 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>architecture.md</title><style>
+:root{--bg:#fbfbf9;--panel:#fff;--ink:#1b1b19;--muted:#63635e;--line:#e4e4de;--accent:#2f5d50;--codebg:#f2f2ee}
+@media (prefers-color-scheme:dark){:root{--bg:#15151a;--panel:#1d1d22;--ink:#ededea;--muted:#9d9d97;--line:#32323a;--accent:#7fbda9;--codebg:#24242b}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.65 ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}
+main{max-width:860px;margin:0 auto;padding:36px 20px 100px}
+h1{font-size:28px;letter-spacing:-.02em;margin:0 0 20px}
+h2{font-size:21px;margin:38px 0 12px;padding-top:18px;border-top:1px solid var(--line)}
+h3{font-size:17px;margin:26px 0 8px}
+p{margin:12px 0}
+a{color:var(--accent)}
+code{background:var(--codebg);padding:2px 6px;border-radius:5px;font:13.5px/1.5 ui-monospace,Consolas,monospace}
+pre{background:var(--codebg);padding:14px 16px;border-radius:9px;overflow-x:auto;border:1px solid var(--line)}
+pre code{background:none;padding:0;font-size:13px;white-space:pre}
+table{border-collapse:collapse;width:100%;margin:16px 0;font-size:14.5px;display:block;overflow-x:auto}
+th,td{border:1px solid var(--line);padding:8px 11px;text-align:left;vertical-align:top}
+th{background:var(--codebg);font-weight:600}
+blockquote{margin:16px 0;padding:12px 16px;border-left:3px solid var(--accent);background:var(--panel);border-radius:0 8px 8px 0;color:var(--muted)}
+blockquote code{background:var(--codebg)}
+hr{border:0;border-top:1px solid var(--line);margin:28px 0}
+ol,ul{padding-left:24px}li{margin:6px 0}
+strong{font-weight:650}
+</style></head><body><main>
+<h1>Lead Triage — Architecture Note</h1>
+<p>One page. How it works, the one decision that mattered, and what I'd change for production.</p>
+<h2>System</h2>
+<pre><code>
+Inbound enquiry (webhook POST)
+   │
+   ▼
+n8n — Webhook node
+   │
+   ▼
+Claude (claude-sonnet-5)  ──  reports SEVEN FACTS about the message
+   │                          disqualifier, company_size, support_function,
+   │                          seniority, timeline, budget_signal, use_case_stated
+   │                          …and nothing else. It is told not to assign a priority.
+   ▼
+n8n — Code node  ──  applies the rubric IN CODE and derives the tier
+   │                 Rule 1 (disqualifier override) → Rule 2 (out of profile)
+   │                 → Rule 3 grid → one modifier → authority gate
+   ▼
+HubSpot CRM  ──  contact created with lead_triage_tier and lead_triage_reason
+   │
+   ▼
+Webhook response: { tier, reason, facts }
+</code></pre>
+<p>Self-hosted n8n, Claude via HTTP, HubSpot via its v3 REST API. Both external calls use generic header auth, so setup is two credentials and no OAuth round-trip.</p>
+<h2>The decision that mattered</h2>
+<p>The model is asked for <strong>facts</strong>, never for the <strong>tier</strong>. That split was measured, not assumed:</p>
+<table><thead><tr><th></th><th>tier accuracy</th></tr></thead><tbody>
+<tr><td>model reports facts, code assigns the tier</td><td><strong>82.7%</strong></td></tr>
+<tr><td>model reports facts <em>and</em> assigns the tier</td><td>71.3%</td></tr>
+<tr><td>baseline — always predict the majority tier</td><td>36.0%</td></tr>
+</tbody></table>
+<p>Both arms used identical field definitions and extracted fields at near-identical accuracy, so the</p>
+<p>11-point gap is not an extraction problem. Splitting true-D leads by <em>how</em> they qualify shows where it actually comes from:</p>
+<table><thead><tr><th>direct arm, true-D rows</th><th>n</th><th>predicted non-D</th></tr></thead><tbody>
+<tr><td>D via Rule 1 — a single absolute override</td><td>24</td><td><strong>0</strong></td></tr>
+<tr><td>D via Rules 2/3 — grid → modifier → cap</td><td>30</td><td><strong>24</strong></td></tr>
+</tbody></table>
+<p><strong>The model applies one explicit override rule perfectly and compositional rules badly.</strong> Rule 1 is a sentence. Rules 2/3 require a table lookup, a conditional modifier, then a cap — and there it quietly rounds D up to C, which in a sales queue is the expensive direction.</p>
+<p>The general principle: <strong>use the model for perception and judgment, use code for bookkeeping.</strong> The boundary belongs wherever a rule can be written down deterministically.</p>
+<h2>One rubric, three consumers</h2>
+<p><code>docs/RUBRIC.md</code> defines the tier rules once. The same executable implementation is used by:</p>
+<ol>
+<li><strong>the labelling tool</strong> — a human judges seven facts, the rules derive the tier, so labels cannot</li>
+</ol>
+<p>   drift between the first lead and the fiftieth</p>
+<ol>
+<li><strong>the eval harness</strong> — scores the model through identical rules</li>
+<li><strong>the production workflow</strong> — <code>scripts/build-workflow.mjs</code> injects it into the n8n Code node</li>
+</ol>
+<p>So the deployed pipeline cannot silently diverge from the thing that was measured. Changing the rubric means re-running the builder, and the tests catch contradictions — which they did: the rubric asserted "A requires director or above" while a modifier allowed a manager to reach A. A failing test found it; reading the prose had not.</p>
+<h2>Model choice</h2>
+<p><code>claude-sonnet-5</code>, measured against <code>claude-opus-5</code>:</p>
+<table><thead><tr><th>model</th><th>tier accuracy</th><th>cost per lead</th></tr></thead><tbody>
+<tr><td>opus-5</td><td>82.7% (n=150)</td><td>$0.0115</td></tr>
+<tr><td>sonnet-5</td><td>86.0% (n=50)</td><td>$0.0040</td></tr>
+</tbody></table>
+<p>A 3.3-point difference at ~0.6 standard errors — statistically indistinguishable, at a third of the price. Disqualifier recall stayed perfect with zero false positives on both, so the failure that would actually cost something is not where the cheaper model gives anything up. At 1,000 leads a month that's $4.00 against $11.50.</p>
+<h2>Integration decisions worth noting</h2>
+<ul>
+<li><strong>Email domains are rewritten at the CRM boundary.</strong> The eval set uses the RFC 2606 reserved</li>
+</ul>
+<p>  <code>.example</code> TLD so no synthetic record can collide with a real domain. HubSpot rejects it as an   invalid address. Rather than weaken the test data, <code>…@x.example</code> is mapped to <code>…@x.example.com</code>   on the way into HubSpot. Real addresses pass through untouched. Synthetic-data hygiene and a real   validator conflicted; the boundary is the right place to reconcile that.</p>
+<ul>
+<li><strong>Service Keys, not private apps.</strong> HubSpot retired private-app creation for newer accounts in</li>
+</ul>
+<p>  late 2026. Service Keys are the data-only replacement and authenticate identically   (<code>Authorization: Bearer</code>). A project-based app would add the HubSpot CLI for no benefit here.</p>
+<ul>
+<li><strong>Header auth over dedicated nodes</strong> for both calls — fewer moving parts, and it survives node</li>
+</ul>
+<p>  version drift between n8n releases.</p>
+<h2>Known gaps, and what production would need</h2>
+<ul>
+<li><strong>Code runs unsandboxed.</strong> n8n's internal task-runner mode executes Code-node JavaScript inside</li>
+</ul>
+<p>  the main process with no isolation. Fine here — the only code is ours and the data is synthetic.   Real deployments should run the task runner in external mode.</p>
+<ul>
+<li><strong>n8n runs outside a container</strong>, which n8n has deprecated. Production would use the official</li>
+</ul>
+<p>  Docker image.</p>
+<ul>
+<li><strong>No retry, no dead-letter path.</strong> If HubSpot is down the lead is lost. A real pipeline needs a</li>
+</ul>
+<p>  queue and a replay path.</p>
+<ul>
+<li><strong>One labeller.</strong> Ground truth is a single person's judgment. A second labeller and an</li>
+</ul>
+<p>  inter-rater agreement figure would materially strengthen the accuracy claim — several residual   "errors" are genuine wording ambiguity rather than model failures.</p>
+<ul>
+<li><strong>The rubric has a gap.</strong> A strong-fit prospect who just signed with a competitor (L47) has no</li>
+</ul>
+<p>  category and falls to D through a downgrade. It should be a nurture tier.</p>
+<ul>
+<li><strong>50 leads, one domain, synthetic.</strong> Enough to find a real design flaw, not enough to certify</li>
+</ul>
+<p>  accuracy for live traffic.</p>
+</main></body></html>
