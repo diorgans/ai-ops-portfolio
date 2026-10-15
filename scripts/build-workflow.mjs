@@ -124,8 +124,15 @@ const wf = {
         sendBody: true,
         specifyBody: "json",
         jsonBody:
+          // HubSpot validates the email domain and rejects the RFC 2606 .example
+          // TLD outright (INVALID_EMAIL). The eval set uses .example on purpose so
+          // no synthetic record can collide with a real domain, so rather than
+          // weaken the test data, map it at the CRM boundary: foo@bar.example
+          // becomes foo@bar.example.com. Still reserved, still obviously fake,
+          // but a real TLD so validation passes. Real addresses pass through
+          // untouched.
           "={{ JSON.stringify({ properties: {\n" +
-          "  email: $json.lead.email,\n" +
+          "  email: String($json.lead.email || '').replace(/\\.example$/i, '.example.com'),\n" +
           "  firstname: $json.lead.first_name,\n" +
           "  lastname: $json.lead.last_name,\n" +
           "  company: $json.lead.company,\n" +

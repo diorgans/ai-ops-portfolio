@@ -181,7 +181,8 @@ Webhook → Claude — extract facts → Apply rubric (code) → HubSpot — cre
 <tr><td>Script says <strong>404</strong></td><td>n8n isn't listening — click <strong>Test workflow</strong> first; it only accepts one request per click</td></tr>
 <tr><td><strong>Claude</strong> node red, 401</td><td>the <code>x-api-key</code> credential — check the header Name is exactly <code>x-api-key</code></td></tr>
 <tr><td><strong>HubSpot</strong> node red, 401</td><td>the Authorization value needs <code>Bearer </code> before the service key</td></tr>
-<tr><td><strong>HubSpot</strong> node red, 400</td><td>property name mismatch — internal names must be <code>lead_triage_tier</code> and <code>lead_triage_reason</code></td></tr>
+<tr><td><strong>HubSpot</strong> node red, 400 <code>INVALID_EMAIL</code></td><td>HubSpot rejects the <code>.example</code> TLD. Fixed in the current workflow, which rewrites <code>…@x.example</code> to <code>…@x.example.com</code> at the CRM boundary. If you imported before that fix, see below.</td></tr>
+<tr><td><strong>HubSpot</strong> node red, 400 (other)</td><td>property name mismatch — internal names must be <code>lead_triage_tier</code> and <code>lead_triage_reason</code></td></tr>
 <tr><td><strong>Apply rubric</strong> node red</td><td>open it and copy the error — the Code node body is also in <code>workflows/code-node.js</code></td></tr>
 <tr><td>Import fails / node unrecognised</td><td>n8n version drift. Rebuild by hand — see the table below</td></tr>
 </tbody></table>

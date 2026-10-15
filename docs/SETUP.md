@@ -222,7 +222,8 @@ anyway: it animates each node as data flows through, which shows the architectur
 | Script says **404** | n8n isn't listening — click **Test workflow** first; it only accepts one request per click |
 | **Claude** node red, 401 | the `x-api-key` credential — check the header Name is exactly `x-api-key` |
 | **HubSpot** node red, 401 | the Authorization value needs `Bearer ` before the service key |
-| **HubSpot** node red, 400 | property name mismatch — internal names must be `lead_triage_tier` and `lead_triage_reason` |
+| **HubSpot** node red, 400 `INVALID_EMAIL` | HubSpot rejects the `.example` TLD. Fixed in the current workflow, which rewrites `…@x.example` to `…@x.example.com` at the CRM boundary. If you imported before that fix, see below. |
+| **HubSpot** node red, 400 (other) | property name mismatch — internal names must be `lead_triage_tier` and `lead_triage_reason` |
 | **Apply rubric** node red | open it and copy the error — the Code node body is also in `workflows/code-node.js` |
 | Import fails / node unrecognised | n8n version drift. Rebuild by hand — see the table below |
 

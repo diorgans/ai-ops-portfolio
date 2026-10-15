@@ -70,7 +70,7 @@
         "genericAuthType": "httpHeaderAuth",
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={{ JSON.stringify({ properties: {\n  email: $json.lead.email,\n  firstname: $json.lead.first_name,\n  lastname: $json.lead.last_name,\n  company: $json.lead.company,\n  lead_triage_tier: $json.tier,\n  lead_triage_reason: $json.tier_reason\n} }) }}",
+        "jsonBody": "={{ JSON.stringify({ properties: {\n  email: String($json.lead.email || '').replace(/\\.example$/i, '.example.com'),\n  firstname: $json.lead.first_name,\n  lastname: $json.lead.last_name,\n  company: $json.lead.company,\n  lead_triage_tier: $json.tier,\n  lead_triage_reason: $json.tier_reason\n} }) }}",
         "options": {
           "timeout": 30000
         }
