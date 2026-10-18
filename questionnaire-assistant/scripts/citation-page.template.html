@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Citation Check</title>
+<style>
+  :root {
+    --bg: #f6f5f2; --card: #fff; --ink: #1d1d1b; --muted: #6b6a66; --line: #e2e0da;
+    --yes: #1f7a4d; --yes-bg: #e3f3ea; --no: #a8382a; --no-bg: #f8e6e2; --meta: #7a5a12; --meta-bg: #f6eed8;
+    --accent: #2f5bd3; --mark: #fff1a8;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #161615; --card: #20201e; --ink: #ecebe6; --muted: #9c9a93; --line: #34332f;
+      --yes: #6fd39f; --yes-bg: #1c3529; --no: #f08a7b; --no-bg: #3b221e; --meta: #e6c46e; --meta-bg: #3a3118;
+      --accent: #8aa7ff; --mark: #5a4f12; }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  header { position: sticky; top: 0; z-index: 2; background: var(--bg); border-bottom: 1px solid var(--line); padding: 12px 16px; }
+  .bar { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; max-width: 860px; margin: 0 auto; }
+  .progress { flex: 1; min-width: 160px; height: 8px; background: var(--line); border-radius: 4px; overflow: hidden; position: relative; }
+  .progress > div { height: 100%; background: var(--yes); width: 0; transition: width .2s; }
+  .progress > span { position: absolute; top: 0; bottom: 0; width: 2px; background: var(--accent); }
+  main { max-width: 860px; margin: 0 auto; padding: 16px; }
+  button { font: inherit; border: 1px solid var(--line); background: var(--card); color: var(--ink); padding: 8px 14px; border-radius: 6px; cursor: pointer; }
+  button.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+  button:disabled { opacity: .4; cursor: default; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 20px; }
+  .meta { color: var(--muted); font-size: 13px; margin-bottom: 4px; }
+  .question { color: var(--muted); font-size: 14px; margin: 0 0 14px; }
+  .lbl { font-size: 12px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); }
+  .claim { font-size: 19px; line-height: 1.4; font-weight: 500; margin: 2px 0 16px; }
+  .ctx { margin: 6px 0 12px; padding: 10px 12px; background: var(--bg); border-radius: 6px; font-size: 14px; }
+  .ctx a { color: var(--accent); font-size: 12px; margin-left: 6px; }
+  mark { background: var(--mark); color: inherit; padding: 0 2px; }
+  .verdicts { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+  .verdicts button { flex: 1; min-width: 150px; text-align: left; }
+  .verdicts button small { display: block; color: var(--muted); font-size: 12px; }
+  .verdicts button.on.yes { background: var(--yes-bg); color: var(--yes); border-color: var(--yes); font-weight: 600; }
+  .verdicts button.on.no { background: var(--no-bg); color: var(--no); border-color: var(--no); font-weight: 600; }
+  .verdicts button.on.meta { background: var(--meta-bg); color: var(--meta); border-color: var(--meta); font-weight: 600; }
+  textarea { width: 100%; font: inherit; font-size: 14px; padding: 8px; border: 1px solid var(--line); border-radius: 6px; background: var(--card); color: var(--ink); margin-top: 12px; min-height: 44px; }
+  .actions { display: flex; gap: 8px; justify-content: space-between; margin-top: 12px; }
+  .help { color: var(--muted); font-size: 13px; margin-top: 16px; }
+  kbd { border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 4px; padding: 0 5px; font-size: 12px; }
+  .milestone { background: var(--yes-bg); color: var(--yes); border-radius: 6px; padding: 8px 12px; margin-bottom: 12px; font-size: 14px; }
+</style>
+</head>
+<body>
+<header>
+  <div class="bar">
+    <strong>Citation check</strong>
+    <div class="progress"><div id="prog"></div><span id="mile"></span></div>
+    <span id="count"></span>
+    <button class="primary" id="export">Download citation-labels.json</button>
+  </div>
+</header>
+<main>
+  <div id="milestone"></div>
+  <div class="card" id="card"></div>
+  <p class="help">
+    Read the claim, then the highlighted quote(s). <b>Supports</b> only if the quotes back up the <i>whole</i> claim;
+    if the claim adds anything the quotes don't say, it doesn't support it. Don't judge whether the claim is true,
+    only whether these quotes say it. Claims like "the documentation does not mention X" go under the third button.
+    Keys: <kbd>1</kbd> supports · <kbd>2</kbd> doesn't · <kbd>3</kbd> about missing info · <kbd>←</kbd>/<kbd>→</kbd> move.
+    Progress saves in this browser automatically. The blue line on the progress bar marks the end of the most important part.
+  </p>
+</main>
+<script>
+const DATA = __DATA__;
+const KEY = 'citation-labels-' + DATA.version;
+const items = DATA.items;
+const VERDICTS = [
+  ['supports', 'yes', 'Supports', 'the quotes say the whole claim'],
+  ['not_supported', 'no', "Doesn't support", 'the claim goes beyond the quotes'],
+  ['about_missing_info', 'meta', 'About missing info', '"the docs don\'t say X"'],
+];
+let state = {};
+try { state = JSON.parse(localStorage.getItem(KEY)) || {}; } catch { state = {}; }
+let cur = items.findIndex((it) => !state[it.key]?.verdict);
+if (cur < 0) cur = 0;
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch {} };
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const done = () => items.filter((it) => state[it.key]?.verdict).length;
+
+function render() {
+  const it = items[cur]; const e = (state[it.key] ??= { verdict: null, note: '' });
+  let h = `<div class="meta">Claim ${cur + 1} of ${items.length}</div>
+    <p class="question">Question: ${esc(it.question)}</p>
+    <div class="lbl">Claim</div><div class="claim">${esc(it.claim)}</div>
+    <div class="lbl">Quoted from the docs</div>`;
+  for (const q of it.quotes) {
+    h += `<div class="ctx">${esc(q.before)}<mark>${esc(q.match)}</mark>${esc(q.after)}
+      <a href="${esc(q.url)}" target="_blank" rel="noopener">${esc(q.page)} ↗</a></div>`;
+  }
+  h += `<div class="verdicts">${VERDICTS.map(([v, cls, label, hint], i) =>
+    `<button class="${cls} ${e.verdict === v ? 'on' : ''}" data-v="${v}"><kbd>${i + 1}</kbd> ${label}<small>${hint}</small></button>`).join('')}</div>
+    <textarea id="note" placeholder="Optional note">${esc(e.note)}</textarea>
+    <div class="actions"><button id="prev" ${cur === 0 ? 'disabled' : ''}>← Back</button>
+    <button id="next" ${cur === items.length - 1 ? 'disabled' : ''}>Skip →</button></div>`;
+  document.getElementById('card').innerHTML = h;
+  document.querySelectorAll('.verdicts button').forEach((b) => b.onclick = () => pick(b.dataset.v));
+  document.getElementById('note').oninput = (ev) => { e.note = ev.target.value; save(); };
+  document.getElementById('prev').onclick = () => go(cur - 1);
+  document.getElementById('next').onclick = () => go(cur + 1);
+
+  const n = done();
+  document.getElementById('prog').style.width = (100 * n / items.length) + '%';
+  document.getElementById('mile').style.left = (100 * DATA.priorityCount / items.length) + '%';
+  document.getElementById('count').textContent = `${n} / ${items.length}`;
+  const priorityDone = items.slice(0, DATA.priorityCount).every((x) => state[x.key]?.verdict);
+  document.getElementById('milestone').innerHTML = priorityDone
+    ? `<div class="milestone">The most important ${DATA.priorityCount} are done. You can download now, or keep going.</div>` : '';
+}
+
+function pick(v) {
+  state[items[cur].key].verdict = v; save();
+  const next = items.findIndex((x, i) => i > cur && !state[x.key]?.verdict);
+  go(next >= 0 ? next : cur);
+}
+function go(i) { cur = Math.min(items.length - 1, Math.max(0, i)); render(); window.scrollTo(0, 0); }
+
+document.addEventListener('keydown', (ev) => {
+  if (ev.target.tagName === 'TEXTAREA') return;
+  if (ev.key >= '1' && ev.key <= '3') pick(VERDICTS[+ev.key - 1][0]);
+  else if (ev.key === 'ArrowRight') go(cur + 1);
+  else if (ev.key === 'ArrowLeft') go(cur - 1);
+});
+
+document.getElementById('export').onclick = () => {
+  const out = { version: DATA.version, exported_at: new Date().toISOString(),
+    labels: items.map((it) => ({ key: it.key, verdict: state[it.key]?.verdict ?? null, note: state[it.key]?.note ?? '' })) };
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([JSON.stringify(out, null, 2)], { type: 'application/json' }));
+  a.download = 'citation-labels.json'; a.click();
+};
+
+render();
+</script>
+</body>
+</html>

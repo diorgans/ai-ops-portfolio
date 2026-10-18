@@ -1,0 +1,531 @@
+{
+  "version": "v2",
+  "reviewer": "human, not an n8n expert",
+  "round1_exported_at": "2026-10-17T02:42:52.819Z",
+  "labels": [
+    {
+      "id": "A01",
+      "supported": [
+        true,
+        true
+      ],
+      "gold": "answer"
+    },
+    {
+      "id": "A02",
+      "supported": [
+        true
+      ],
+      "gold": "answer"
+    },
+    {
+      "id": "A03",
+      "supported": [
+        true,
+        true
+      ],
+      "gold": "answer",
+      "round1": {
+        "supported": [
+          true,
+          false
+        ],
+        "gold": "partial",
+        "resolution": "evidence widened; reviewer agreed"
+      }
+    },
+    {
+      "id": "A04",
+      "supported": [
+        true
+      ],
+      "gold": "answer"
+    },
+    {
+      "id": "A05",
+      "supported": [
+        true
+      ],
+      "gold": "answer"
+    },
+    {
+      "id": "A06",
+      "supported": [
+        true,
+        true
+      ],
+      "gold": "answer",
+      "round1": {
+        "supported": [
+          false,
+          true
+        ],
+        "gold": "partial",
+        "resolution": "evidence widened; reviewer agreed"
+      }
+    },
+    {
+      "id": "A07",
+      "supported": [
+        true,
+        true
+      ],
+      "gold": "answer"
+    },
+    {
+      "id": "A08",
+      "supported": [
+        true
+      ],
+      "gold": "answer"
+    },
+    {
+      "id": "A09",
+      "supported": [
+        true
+      ],
+      "gold": "answer"
+    },
+    {
+      "id": "A10",
+      "supported": [
+        true
+      ],
+      "gold": "answer"
+    },
+    {
+      "id": "A11",
+      "supported": [
+        true,
+        true,
+        true
+      ],
+      "gold": "answer"
+    },
+    {
+      "id": "A12",
+      "supported": [
+        true
+      ],
+      "gold": "answer"
+    },
+    {
+      "id": "A13",
+      "supported": [
+        true,
+        true
+      ],
+      "gold": "answer",
+      "note": "1. unsure due to different punctuation which can change how the sentence structure is read. Kept in KB since it matches the quote"
+    },
+    {
+      "id": "A14",
+      "supported": [
+        true
+      ],
+      "gold": "answer"
+    },
+    {
+      "id": "A15",
+      "supported": [
+        true,
+        true
+      ],
+      "gold": "answer",
+      "note": "2. missing 'and' between node.js module and the moment npm package"
+    },
+    {
+      "id": "A16",
+      "supported": [
+        true
+      ],
+      "gold": "answer",
+      "round1": {
+        "supported": [
+          false
+        ],
+        "gold": "abstain",
+        "resolution": "evidence widened; reviewer agreed"
+      }
+    },
+    {
+      "id": "A17",
+      "supported": [
+        true,
+        true
+      ],
+      "gold": "answer",
+      "round1": {
+        "supported": [
+          true,
+          false
+        ],
+        "gold": "partial",
+        "resolution": "evidence widened; reviewer agreed"
+      }
+    },
+    {
+      "id": "A18",
+      "supported": [
+        true
+      ],
+      "gold": "answer",
+      "round1": {
+        "supported": [
+          false
+        ],
+        "gold": "abstain",
+        "resolution": "evidence widened; reviewer agreed"
+      }
+    },
+    {
+      "id": "A19",
+      "supported": [
+        true
+      ],
+      "gold": "answer"
+    },
+    {
+      "id": "A20",
+      "supported": [
+        true,
+        true
+      ],
+      "gold": "answer",
+      "round1": {
+        "supported": [
+          false,
+          true
+        ],
+        "gold": "partial",
+        "resolution": "evidence widened; reviewer agreed"
+      }
+    },
+    {
+      "id": "P01",
+      "supported": [
+        true,
+        false
+      ],
+      "gold": "partial"
+    },
+    {
+      "id": "P02",
+      "supported": [
+        true,
+        false
+      ],
+      "gold": "partial"
+    },
+    {
+      "id": "P03",
+      "supported": [
+        true,
+        false
+      ],
+      "gold": "partial"
+    },
+    {
+      "id": "P04",
+      "supported": [
+        true,
+        false
+      ],
+      "gold": "partial",
+      "round1": {
+        "supported": [
+          false,
+          false
+        ],
+        "gold": "abstain",
+        "resolution": "point reworded to match the page, evidence widened; reviewer agreed"
+      }
+    },
+    {
+      "id": "P05",
+      "supported": [
+        true,
+        false
+      ],
+      "gold": "partial"
+    },
+    {
+      "id": "P06",
+      "supported": [
+        true,
+        false
+      ],
+      "gold": "partial"
+    },
+    {
+      "id": "P07",
+      "supported": [
+        true,
+        false
+      ],
+      "gold": "partial"
+    },
+    {
+      "id": "P08",
+      "supported": [
+        true,
+        false
+      ],
+      "gold": "partial"
+    },
+    {
+      "id": "P09",
+      "supported": [
+        true,
+        false
+      ],
+      "gold": "partial"
+    },
+    {
+      "id": "P10",
+      "supported": [
+        true,
+        false
+      ],
+      "gold": "partial"
+    },
+    {
+      "id": "N01",
+      "supported": [
+        false
+      ],
+      "gold": "abstain"
+    },
+    {
+      "id": "N02",
+      "supported": [
+        false
+      ],
+      "gold": "abstain"
+    },
+    {
+      "id": "N03",
+      "supported": [
+        false
+      ],
+      "gold": "abstain"
+    },
+    {
+      "id": "N04",
+      "supported": [
+        false
+      ],
+      "gold": "abstain"
+    },
+    {
+      "id": "N05",
+      "supported": [
+        false
+      ],
+      "gold": "abstain"
+    },
+    {
+      "id": "N06",
+      "supported": [
+        false
+      ],
+      "gold": "abstain"
+    },
+    {
+      "id": "N07",
+      "supported": [
+        false
+      ],
+      "gold": "abstain"
+    },
+    {
+      "id": "N08",
+      "supported": [
+        false
+      ],
+      "gold": "abstain"
+    },
+    {
+      "id": "N09",
+      "supported": [
+        false
+      ],
+      "gold": "abstain"
+    },
+    {
+      "id": "O01",
+      "supported": [
+        false
+      ],
+      "gold": "abstain"
+    },
+    {
+      "id": "O02",
+      "supported": [
+        false
+      ],
+      "gold": "abstain"
+    },
+    {
+      "id": "O03",
+      "supported": [
+        false
+      ],
+      "gold": "abstain"
+    },
+    {
+      "id": "O04",
+      "supported": [
+        false
+      ],
+      "gold": "abstain"
+    },
+    {
+      "id": "O05",
+      "supported": [
+        false
+      ],
+      "gold": "abstain"
+    },
+    {
+      "id": "O06",
+      "supported": [
+        false
+      ],
+      "gold": "abstain"
+    },
+    {
+      "id": "H01",
+      "supported": [
+        false
+      ],
+      "gold": "abstain"
+    },
+    {
+      "id": "H02",
+      "supported": [
+        false
+      ],
+      "gold": "abstain"
+    },
+    {
+      "id": "H03",
+      "supported": [
+        false
+      ],
+      "gold": "abstain"
+    },
+    {
+      "id": "H04",
+      "supported": [
+        false
+      ],
+      "gold": "abstain"
+    },
+    {
+      "id": "H05",
+      "supported": [
+        false
+      ],
+      "gold": "abstain"
+    },
+    {
+      "id": "H06",
+      "supported": [
+        false
+      ],
+      "gold": "abstain"
+    },
+    {
+      "id": "H07",
+      "supported": [
+        false,
+        false
+      ],
+      "gold": "abstain"
+    },
+    {
+      "id": "H08",
+      "supported": [
+        true,
+        false
+      ],
+      "gold": "partial"
+    },
+    {
+      "id": "H09",
+      "supported": [
+        true
+      ],
+      "gold": "answer",
+      "round1": {
+        "supported": [
+          false
+        ],
+        "gold": "abstain",
+        "resolution": "quote widened to include the page's own \"Sub-wokflow\" typo; reviewer agreed"
+      },
+      "note": "sub-workflow vs active workflow? putting not in KB"
+    },
+    {
+      "id": "H10",
+      "supported": [
+        true,
+        true
+      ],
+      "gold": "answer",
+      "round1": {
+        "supported": [
+          true,
+          false
+        ],
+        "gold": "partial",
+        "resolution": "list items shown run together on the label page; the HTTP Request node is named; reviewer agreed"
+      },
+      "note": "highlight says read/white file "
+    },
+    {
+      "id": "H11",
+      "supported": [
+        true
+      ],
+      "gold": "answer"
+    },
+    {
+      "id": "H12",
+      "supported": [
+        true
+      ],
+      "gold": "answer"
+    },
+    {
+      "id": "H13",
+      "supported": [
+        true
+      ],
+      "gold": "answer",
+      "round1": {
+        "supported": [
+          false
+        ],
+        "gold": "abstain",
+        "resolution": "quote widened to include the Stop And Error node name; reviewer agreed"
+      }
+    },
+    {
+      "id": "H14",
+      "supported": [
+        false
+      ],
+      "gold": "abstain"
+    },
+    {
+      "id": "H15",
+      "supported": [
+        false
+      ],
+      "gold": "abstain"
+    }
+  ],
+  "hard_set_exported_at": "2026-10-17T17:18:04.193Z"
+}

@@ -1,0 +1,1533 @@
+{
+  "exported_at": "2026-10-18T17:14:12.381Z",
+  "labels": [
+    {
+      "key": "c001",
+      "arm": "claude-forced-answer-r2",
+      "qid": "N02",
+      "index": 0,
+      "verdict": "supports",
+      "note": ""
+    },
+    {
+      "key": "c002",
+      "arm": "claude-grounded-v2",
+      "qid": "P06",
+      "index": 1,
+      "verdict": "supports",
+      "note": ""
+    },
+    {
+      "key": "c003",
+      "arm": "claude-forced-answer-r2",
+      "qid": "P10",
+      "index": 3,
+      "verdict": "not_supported",
+      "note": ""
+    },
+    {
+      "key": "c004",
+      "arm": "claude-forced-answer-r2",
+      "qid": "H03",
+      "index": 3,
+      "verdict": "not_supported",
+      "note": ""
+    },
+    {
+      "key": "c005",
+      "arm": "claude-forced-answer-r2",
+      "qid": "H04",
+      "index": 1,
+      "verdict": "supports",
+      "note": ""
+    },
+    {
+      "key": "c006",
+      "arm": "claude-grounded-v2",
+      "qid": "P01",
+      "index": 0,
+      "verdict": "supports",
+      "note": ""
+    },
+    {
+      "key": "c007",
+      "arm": "claude-forced-answer-r2",
+      "qid": "O05",
+      "index": 1,
+      "verdict": "not_supported",
+      "note": ""
+    },
+    {
+      "key": "c008",
+      "arm": "claude-grounded-v2",
+      "qid": "P09",
+      "index": 0,
+      "verdict": "supports",
+      "note": ""
+    },
+    {
+      "key": "c009",
+      "arm": "claude-forced-answer-r2",
+      "qid": "N09",
+      "index": 1,
+      "verdict": "not_supported",
+      "note": ""
+    },
+    {
+      "key": "c010",
+      "arm": "claude-grounded-v2",
+      "qid": "P08",
+      "index": 0,
+      "verdict": "supports",
+      "note": ""
+    },
+    {
+      "key": "c011",
+      "arm": "claude-grounded-v2",
+      "qid": "P05",
+      "index": 0,
+      "verdict": "not_supported",
+      "note": ""
+    },
+    {
+      "key": "c012",
+      "arm": "claude-forced-answer-r2",
+      "qid": "P05",
+      "index": 2,
+      "verdict": "supports",
+      "note": ""
+    },
+    {
+      "key": "c013",
+      "arm": "claude-forced-answer-r2",
+      "qid": "H08",
+      "index": 1,
+      "verdict": "not_supported",
+      "note": ""
+    },
+    {
+      "key": "c014",
+      "arm": "claude-forced-answer-r2",
+      "qid": "H01",
+      "index": 3,
+      "verdict": "not_supported",
+      "note": ""
+    },
+    {
+      "key": "c015",
+      "arm": "claude-forced-answer-r2",
+      "qid": "P06",
+      "index": 1,
+      "verdict": "supports",
+      "note": ""
+    },
+    {
+      "key": "c016",
+      "arm": "claude-grounded-v2",
+      "qid": "N01",
+      "index": 1,
+      "verdict": "not_supported",
+      "note": ""
+    },
+    {
+      "key": "c017",
+      "arm": "claude-forced-answer-r2",
+      "qid": "N06",
+      "index": 0,
+      "verdict": "not_supported",
+      "note": ""
+    },
+    {
+      "key": "c018",
+      "arm": "claude-forced-answer-r2",
+      "qid": "P05",
+      "index": 6,
+      "verdict": "supports",
+      "note": ""
+    },
+    {
+      "key": "c019",
+      "arm": "claude-forced-answer-r2",
+      "qid": "P01",
+      "index": 1,
+      "verdict": "not_supported",
+      "note": ""
+    },
+    {
+      "key": "c020",
+      "arm": "claude-forced-answer-r2",
+      "qid": "N07",
+      "index": 1,
+      "verdict": "not_supported",
+      "note": ""
+    },
+    {
+      "key": "c021",
+      "arm": "claude-grounded-v2",
+      "qid": "P08",
+      "index": 1,
+      "verdict": "supports",
+      "note": ""
+    },
+    {
+      "key": "c022",
+      "arm": "claude-forced-answer-r2",
+      "qid": "H15",
+      "index": 1,
+      "verdict": "supports",
+      "note": ""
+    },
+    {
+      "key": "c023",
+      "arm": "claude-forced-answer-r2",
+      "qid": "N04",
+      "index": 1,
+      "verdict": "not_supported",
+      "note": ""
+    },
+    {
+      "key": "c024",
+      "arm": "claude-grounded-v2",
+      "qid": "P06",
+      "index": 0,
+      "verdict": "supports",
+      "note": ""
+    },
+    {
+      "key": "c025",
+      "arm": "claude-forced-answer-r2",
+      "qid": "N08",
+      "index": 5,
+      "verdict": "not_supported",
+      "note": ""
+    },
+    {
+      "key": "c026",
+      "arm": "claude-grounded-v2",
+      "qid": "N06",
+      "index": 0,
+      "verdict": "not_supported",
+      "note": ""
+    },
+    {
+      "key": "c027",
+      "arm": "claude-forced-answer-r2",
+      "qid": "P08",
+      "index": 2,
+      "verdict": "supports",
+      "note": ""
+    },
+    {
+      "key": "c028",
+      "arm": "claude-grounded-v2",
+      "qid": "N05",
+      "index": 0,
+      "verdict": "supports",
+      "note": ""
+    },
+    {
+      "key": "c029",
+      "arm": "claude-forced-answer-r2",
+      "qid": "H03",
+      "index": 1,
+      "verdict": "supports",
+      "note": ""
+    },
+    {
+      "key": "c030",
+      "arm": "claude-forced-answer-r2",
+      "qid": "H03",
+      "index": 0,
+      "verdict": "not_supported",
+      "note": ""
+    },
+    {
+      "key": "c031",
+      "arm": "claude-forced-answer-r2",
+      "qid": "H05",
+      "index": 1,
+      "verdict": "supports",
+      "note": ""
+    },
+    {
+      "key": "c032",
+      "arm": "claude-forced-answer-r2",
+      "qid": "N08",
+      "index": 2,
+      "verdict": "supports",
+      "note": ""
+    },
+    {
+      "key": "c033",
+      "arm": "claude-forced-answer-r2",
+      "qid": "P05",
+      "index": 11,
+      "verdict": "supports",
+      "note": ""
+    },
+    {
+      "key": "c034",
+      "arm": "claude-forced-answer-r2",
+      "qid": "P05",
+      "index": 1,
+      "verdict": "supports",
+      "note": ""
+    },
+    {
+      "key": "c035",
+      "arm": "claude-forced-answer-r2",
+      "qid": "H01",
+      "index": 2,
+      "verdict": "not_supported",
+      "note": ""
+    },
+    {
+      "key": "c036",
+      "arm": "claude-forced-answer-r2",
+      "qid": "H01",
+      "index": 0,
+      "verdict": "not_supported",
+      "note": ""
+    },
+    {
+      "key": "c037",
+      "arm": "claude-forced-answer-r2",
+      "qid": "P05",
+      "index": 9,
+      "verdict": "not_supported",
+      "note": ""
+    },
+    {
+      "key": "c038",
+      "arm": "claude-forced-answer-r2",
+      "qid": "P01",
+      "index": 0,
+      "verdict": "supports",
+      "note": ""
+    },
+    {
+      "key": "c039",
+      "arm": "claude-forced-answer-r2",
+      "qid": "H02",
+      "index": 2,
+      "verdict": "not_supported",
+      "note": ""
+    },
+    {
+      "key": "c040",
+      "arm": "claude-forced-answer-r2",
+      "qid": "N06",
+      "index": 1,
+      "verdict": "not_supported",
+      "note": ""
+    },
+    {
+      "key": "c041",
+      "arm": "claude-forced-answer-r2",
+      "qid": "N01",
+      "index": 3,
+      "verdict": "not_supported",
+      "note": ""
+    },
+    {
+      "key": "c042",
+      "arm": "claude-forced-answer-r2",
+      "qid": "H05",
+      "index": 0,
+      "verdict": "not_supported",
+      "note": ""
+    },
+    {
+      "key": "c043",
+      "arm": "claude-forced-answer-r2",
+      "qid": "N05",
+      "index": 1,
+      "verdict": "not_supported",
+      "note": ""
+    },
+    {
+      "key": "c044",
+      "arm": "claude-forced-answer-r2",
+      "qid": "N02",
+      "index": 1,
+      "verdict": "supports",
+      "note": ""
+    },
+    {
+      "key": "c045",
+      "arm": "claude-forced-answer-r2",
+      "qid": "H01",
+      "index": 1,
+      "verdict": "not_supported",
+      "note": ""
+    },
+    {
+      "key": "c046",
+      "arm": "claude-grounded-v2",
+      "qid": "P04",
+      "index": 1,
+      "verdict": "not_supported",
+      "note": ""
+    },
+    {
+      "key": "c047",
+      "arm": "claude-forced-answer-r2",
+      "qid": "P10",
+      "index": 0,
+      "verdict": "supports",
+      "note": ""
+    },
+    {
+      "key": "c048",
+      "arm": "claude-forced-answer-r2",
+      "qid": "P08",
+      "index": 1,
+      "verdict": "supports",
+      "note": ""
+    },
+    {
+      "key": "c049",
+      "arm": "claude-forced-answer-r2",
+      "qid": "N05",
+      "index": 2,
+      "verdict": "not_supported",
+      "note": ""
+    },
+    {
+      "key": "c050",
+      "arm": "claude-forced-answer-r2",
+      "qid": "H03",
+      "index": 2,
+      "verdict": "not_supported",
+      "note": ""
+    },
+    {
+      "key": "c051",
+      "arm": "claude-forced-answer-r2",
+      "qid": "P05",
+      "index": 0,
+      "verdict": "supports",
+      "note": ""
+    },
+    {
+      "key": "c052",
+      "arm": "claude-grounded-v2",
+      "qid": "P03",
+      "index": 1,
+      "verdict": "supports",
+      "note": ""
+    },
+    {
+      "key": "c053",
+      "arm": "claude-forced-answer-r2",
+      "qid": "P03",
+      "index": 2,
+      "verdict": "not_supported",
+      "note": ""
+    },
+    {
+      "key": "c054",
+      "arm": "claude-forced-answer-r2",
+      "qid": "P10",
+      "index": 1,
+      "verdict": "not_supported",
+      "note": ""
+    },
+    {
+      "key": "c055",
+      "arm": "claude-forced-answer-r2",
+      "qid": "H07",
+      "index": 1,
+      "verdict": "not_supported",
+      "note": ""
+    },
+    {
+      "key": "c056",
+      "arm": "claude-forced-answer-r2",
+      "qid": "P07",
+      "index": 0,
+      "verdict": "supports",
+      "note": ""
+    },
+    {
+      "key": "c057",
+      "arm": "claude-forced-answer-r2",
+      "qid": "H04",
+      "index": 0,
+      "verdict": "not_supported",
+      "note": ""
+    },
+    {
+      "key": "c058",
+      "arm": "claude-forced-answer-r2",
+      "qid": "P05",
+      "index": 12,
+      "verdict": "not_supported",
+      "note": ""
+    },
+    {
+      "key": "c059",
+      "arm": "claude-grounded-v2",
+      "qid": "H01",
+      "index": 0,
+      "verdict": "not_supported",
+      "note": ""
+    },
+    {
+      "key": "c060",
+      "arm": "claude-forced-answer-r2",
+      "qid": "N01",
+      "index": 4,
+      "verdict": "not_supported",
+      "note": ""
+    },
+    {
+      "key": "c061",
+      "arm": "claude-forced-answer-r2",
+      "qid": "P07",
+      "index": 3,
+      "verdict": "not_supported",
+      "note": ""
+    },
+    {
+      "key": "c062",
+      "arm": "claude-forced-answer-r2",
+      "qid": "P07",
+      "index": 4,
+      "verdict": "not_supported",
+      "note": ""
+    },
+    {
+      "key": "c063",
+      "arm": "claude-forced-answer-r2",
+      "qid": "H05",
+      "index": 3,
+      "verdict": "not_supported",
+      "note": ""
+    },
+    {
+      "key": "c064",
+      "arm": "claude-forced-answer-r2",
+      "qid": "P04",
+      "index": 1,
+      "verdict": "not_supported",
+      "note": ""
+    },
+    {
+      "key": "c065",
+      "arm": "claude-forced-answer-r2",
+      "qid": "P03",
+      "index": 1,
+      "verdict": "supports",
+      "note": ""
+    },
+    {
+      "key": "c066",
+      "arm": "claude-forced-answer-r2",
+      "qid": "H08",
+      "index": 0,
+      "verdict": "not_supported",
+      "note": ""
+    },
+    {
+      "key": "c067",
+      "arm": "claude-forced-answer-r2",
+      "qid": "P08",
+      "index": 3,
+      "verdict": "not_supported",
+      "note": ""
+    },
+    {
+      "key": "c068",
+      "arm": "claude-forced-answer-r2",
+      "qid": "H02",
+      "index": 1,
+      "verdict": "not_supported",
+      "note": ""
+    },
+    {
+      "key": "c069",
+      "arm": "claude-grounded-v2",
+      "qid": "H02",
+      "index": 0,
+      "verdict": "supports",
+      "note": ""
+    },
+    {
+      "key": "c070",
+      "arm": "claude-grounded-v2",
+      "qid": "P05",
+      "index": 1,
+      "verdict": "supports",
+      "note": ""
+    },
+    {
+      "key": "c071",
+      "arm": "claude-forced-answer-r2",
+      "qid": "H08",
+      "index": 2,
+      "verdict": "not_supported",
+      "note": ""
+    },
+    {
+      "key": "c072",
+      "arm": "claude-grounded-v2",
+      "qid": "H15",
+      "index": 1,
+      "verdict": "supports",
+      "note": ""
+    },
+    {
+      "key": "c073",
+      "arm": "claude-forced-answer-r2",
+      "qid": "P02",
+      "index": 0,
+      "verdict": "supports",
+      "note": ""
+    },
+    {
+      "key": "c074",
+      "arm": "claude-forced-answer-r2",
+      "qid": "H14",
+      "index": 1,
+      "verdict": "not_supported",
+      "note": ""
+    },
+    {
+      "key": "c075",
+      "arm": "claude-forced-answer-r2",
+      "qid": "P06",
+      "index": 4,
+      "verdict": "not_supported",
+      "note": ""
+    },
+    {
+      "key": "c076",
+      "arm": "claude-grounded-v2",
+      "qid": "N01",
+      "index": 0,
+      "verdict": "not_supported",
+      "note": ""
+    },
+    {
+      "key": "c077",
+      "arm": "claude-forced-answer-r2",
+      "qid": "P07",
+      "index": 5,
+      "verdict": "supports",
+      "note": ""
+    },
+    {
+      "key": "c078",
+      "arm": "claude-forced-answer-r2",
+      "qid": "P01",
+      "index": 2,
+      "verdict": "not_supported",
+      "note": ""
+    },
+    {
+      "key": "c079",
+      "arm": "claude-forced-answer-r2",
+      "qid": "H04",
+      "index": 2,
+      "verdict": "not_supported",
+      "note": ""
+    },
+    {
+      "key": "c080",
+      "arm": "claude-forced-answer-r2",
+      "qid": "P03",
+      "index": 0,
+      "verdict": "not_supported",
+      "note": ""
+    },
+    {
+      "key": "c081",
+      "arm": "claude-forced-answer-r2",
+      "qid": "P04",
+      "index": 0,
+      "verdict": "not_supported",
+      "note": ""
+    },
+    {
+      "key": "c082",
+      "arm": "claude-grounded-v2",
+      "qid": "P07",
+      "index": 1,
+      "verdict": "supports",
+      "note": ""
+    },
+    {
+      "key": "c083",
+      "arm": "claude-forced-answer-r2",
+      "qid": "N08",
+      "index": 4,
+      "verdict": "supports",
+      "note": ""
+    },
+    {
+      "key": "c084",
+      "arm": "claude-forced-answer-r2",
+      "qid": "P05",
+      "index": 10,
+      "verdict": "supports",
+      "note": ""
+    },
+    {
+      "key": "c085",
+      "arm": "claude-forced-answer-r2",
+      "qid": "P09",
+      "index": 0,
+      "verdict": "supports",
+      "note": ""
+    },
+    {
+      "key": "c086",
+      "arm": "claude-forced-answer-r2",
+      "qid": "N05",
+      "index": 0,
+      "verdict": "supports",
+      "note": ""
+    },
+    {
+      "key": "c087",
+      "arm": "claude-forced-answer-r2",
+      "qid": "N01",
+      "index": 2,
+      "verdict": "not_supported",
+      "note": ""
+    },
+    {
+      "key": "c088",
+      "arm": "claude-forced-answer-r2",
+      "qid": "P07",
+      "index": 1,
+      "verdict": "supports",
+      "note": ""
+    },
+    {
+      "key": "c089",
+      "arm": "claude-grounded-v2",
+      "qid": "P06",
+      "index": 2,
+      "verdict": "supports",
+      "note": ""
+    },
+    {
+      "key": "c090",
+      "arm": "claude-forced-answer-r2",
+      "qid": "P05",
+      "index": 8,
+      "verdict": "supports",
+      "note": ""
+    },
+    {
+      "key": "c091",
+      "arm": "claude-grounded-v2",
+      "qid": "H01",
+      "index": 1,
+      "verdict": "supports",
+      "note": ""
+    },
+    {
+      "key": "c092",
+      "arm": "claude-forced-answer-r2",
+      "qid": "H15",
+      "index": 0,
+      "verdict": "supports",
+      "note": ""
+    },
+    {
+      "key": "c093",
+      "arm": "claude-grounded-v2",
+      "qid": "N05",
+      "index": 1,
+      "verdict": "supports",
+      "note": ""
+    },
+    {
+      "key": "c094",
+      "arm": "claude-grounded-v2",
+      "qid": "H15",
+      "index": 0,
+      "verdict": "supports",
+      "note": ""
+    },
+    {
+      "key": "c095",
+      "arm": "claude-forced-answer-r2",
+      "qid": "N08",
+      "index": 1,
+      "verdict": "supports",
+      "note": ""
+    },
+    {
+      "key": "c096",
+      "arm": "claude-forced-answer-r2",
+      "qid": "N06",
+      "index": 3,
+      "verdict": "not_supported",
+      "note": ""
+    },
+    {
+      "key": "c097",
+      "arm": "claude-forced-answer-r2",
+      "qid": "N09",
+      "index": 3,
+      "verdict": "not_supported",
+      "note": ""
+    },
+    {
+      "key": "c098",
+      "arm": "claude-grounded-v2",
+      "qid": "P07",
+      "index": 0,
+      "verdict": "supports",
+      "note": ""
+    },
+    {
+      "key": "c099",
+      "arm": "claude-forced-answer-r2",
+      "qid": "N01",
+      "index": 1,
+      "verdict": "not_supported",
+      "note": ""
+    },
+    {
+      "key": "c100",
+      "arm": "claude-forced-answer-r2",
+      "qid": "P06",
+      "index": 3,
+      "verdict": "not_supported",
+      "note": ""
+    },
+    {
+      "key": "c101",
+      "arm": "claude-forced-answer-r2",
+      "qid": "P08",
+      "index": 0,
+      "verdict": "supports",
+      "note": ""
+    },
+    {
+      "key": "c102",
+      "arm": "claude-forced-answer-r2",
+      "qid": "P07",
+      "index": 2,
+      "verdict": "supports",
+      "note": ""
+    },
+    {
+      "key": "c103",
+      "arm": "claude-forced-answer-r2",
+      "qid": "N09",
+      "index": 2,
+      "verdict": "supports",
+      "note": ""
+    },
+    {
+      "key": "c104",
+      "arm": "claude-forced-answer-r2",
+      "qid": "P10",
+      "index": 2,
+      "verdict": "supports",
+      "note": ""
+    },
+    {
+      "key": "c105",
+      "arm": "claude-forced-answer-r2",
+      "qid": "P04",
+      "index": 2,
+      "verdict": "supports",
+      "note": ""
+    },
+    {
+      "key": "c106",
+      "arm": "claude-forced-answer-r2",
+      "qid": "P05",
+      "index": 4,
+      "verdict": "supports",
+      "note": ""
+    },
+    {
+      "key": "c107",
+      "arm": "claude-grounded-v2",
+      "qid": "P04",
+      "index": 0,
+      "verdict": "not_supported",
+      "note": ""
+    },
+    {
+      "key": "c108",
+      "arm": "claude-grounded-v2",
+      "qid": "P03",
+      "index": 0,
+      "verdict": "not_supported",
+      "note": ""
+    },
+    {
+      "key": "c109",
+      "arm": "claude-forced-answer-r2",
+      "qid": "P08",
+      "index": 4,
+      "verdict": "not_supported",
+      "note": ""
+    },
+    {
+      "key": "c110",
+      "arm": "claude-forced-answer-r2",
+      "qid": "N02",
+      "index": 2,
+      "verdict": "not_supported",
+      "note": ""
+    },
+    {
+      "key": "c111",
+      "arm": "claude-forced-answer-r2",
+      "qid": "P05",
+      "index": 5,
+      "verdict": "supports",
+      "note": ""
+    },
+    {
+      "key": "c112",
+      "arm": "claude-forced-answer-r2",
+      "qid": "N06",
+      "index": 2,
+      "verdict": "supports",
+      "note": ""
+    },
+    {
+      "key": "c113",
+      "arm": "claude-forced-answer-r2",
+      "qid": "N08",
+      "index": 3,
+      "verdict": "supports",
+      "note": ""
+    },
+    {
+      "key": "c114",
+      "arm": "claude-forced-answer-r2",
+      "qid": "H05",
+      "index": 2,
+      "verdict": "not_supported",
+      "note": ""
+    },
+    {
+      "key": "c115",
+      "arm": "claude-forced-answer-r2",
+      "qid": "P05",
+      "index": 3,
+      "verdict": "supports",
+      "note": ""
+    },
+    {
+      "key": "c116",
+      "arm": "claude-forced-answer-r2",
+      "qid": "P06",
+      "index": 2,
+      "verdict": "supports",
+      "note": ""
+    },
+    {
+      "key": "c117",
+      "arm": "claude-forced-answer-r2",
+      "qid": "P05",
+      "index": 7,
+      "verdict": "supports",
+      "note": ""
+    },
+    {
+      "key": "c118",
+      "arm": "claude-forced-answer-r2",
+      "qid": "N07",
+      "index": 2,
+      "verdict": "not_supported",
+      "note": ""
+    },
+    {
+      "key": "c119",
+      "arm": "claude-forced-answer-r2",
+      "qid": "P06",
+      "index": 0,
+      "verdict": "supports",
+      "note": ""
+    },
+    {
+      "key": "c120",
+      "arm": "claude-grounded-v2",
+      "qid": "P02",
+      "index": 0,
+      "verdict": "supports",
+      "note": ""
+    },
+    {
+      "key": "c121",
+      "arm": "claude-grounded-v2",
+      "qid": "P05",
+      "index": 2,
+      "verdict": "supports",
+      "note": ""
+    },
+    {
+      "key": "c122",
+      "arm": "claude-grounded-v2",
+      "qid": "P10",
+      "index": 0,
+      "verdict": "not_supported",
+      "note": ""
+    },
+    {
+      "key": "c123",
+      "arm": "claude-grounded-v2",
+      "qid": "A04",
+      "index": 0,
+      "verdict": null,
+      "note": ""
+    },
+    {
+      "key": "c124",
+      "arm": "claude-grounded-v2",
+      "qid": "H09",
+      "index": 0,
+      "verdict": null,
+      "note": ""
+    },
+    {
+      "key": "c125",
+      "arm": "claude-grounded-v2",
+      "qid": "A06",
+      "index": 1,
+      "verdict": null,
+      "note": ""
+    },
+    {
+      "key": "c126",
+      "arm": "claude-grounded-v2",
+      "qid": "A11",
+      "index": 3,
+      "verdict": null,
+      "note": ""
+    },
+    {
+      "key": "c127",
+      "arm": "claude-grounded-v2",
+      "qid": "A19",
+      "index": 2,
+      "verdict": null,
+      "note": ""
+    },
+    {
+      "key": "c128",
+      "arm": "claude-grounded-v2",
+      "qid": "A06",
+      "index": 3,
+      "verdict": null,
+      "note": ""
+    },
+    {
+      "key": "c129",
+      "arm": "claude-grounded-v2",
+      "qid": "A20",
+      "index": 1,
+      "verdict": null,
+      "note": ""
+    },
+    {
+      "key": "c130",
+      "arm": "claude-grounded-v2",
+      "qid": "A06",
+      "index": 4,
+      "verdict": null,
+      "note": ""
+    },
+    {
+      "key": "c131",
+      "arm": "claude-grounded-v2",
+      "qid": "A16",
+      "index": 0,
+      "verdict": null,
+      "note": ""
+    },
+    {
+      "key": "c132",
+      "arm": "claude-grounded-v2",
+      "qid": "H10",
+      "index": 1,
+      "verdict": null,
+      "note": ""
+    },
+    {
+      "key": "c133",
+      "arm": "claude-grounded-v2",
+      "qid": "A06",
+      "index": 2,
+      "verdict": null,
+      "note": ""
+    },
+    {
+      "key": "c134",
+      "arm": "claude-grounded-v2",
+      "qid": "A01",
+      "index": 1,
+      "verdict": null,
+      "note": ""
+    },
+    {
+      "key": "c135",
+      "arm": "claude-grounded-v2",
+      "qid": "A11",
+      "index": 1,
+      "verdict": null,
+      "note": ""
+    },
+    {
+      "key": "c136",
+      "arm": "claude-grounded-v2",
+      "qid": "A20",
+      "index": 0,
+      "verdict": null,
+      "note": ""
+    },
+    {
+      "key": "c137",
+      "arm": "claude-grounded-v2",
+      "qid": "H11",
+      "index": 0,
+      "verdict": null,
+      "note": ""
+    },
+    {
+      "key": "c138",
+      "arm": "claude-grounded-v2",
+      "qid": "A06",
+      "index": 5,
+      "verdict": null,
+      "note": ""
+    },
+    {
+      "key": "c139",
+      "arm": "claude-grounded-v2",
+      "qid": "H13",
+      "index": 0,
+      "verdict": null,
+      "note": ""
+    },
+    {
+      "key": "c140",
+      "arm": "claude-grounded-v2",
+      "qid": "A18",
+      "index": 0,
+      "verdict": null,
+      "note": ""
+    },
+    {
+      "key": "c141",
+      "arm": "claude-grounded-v2",
+      "qid": "A17",
+      "index": 1,
+      "verdict": null,
+      "note": ""
+    },
+    {
+      "key": "c142",
+      "arm": "claude-grounded-v2",
+      "qid": "A01",
+      "index": 5,
+      "verdict": null,
+      "note": ""
+    },
+    {
+      "key": "c143",
+      "arm": "claude-grounded-v2",
+      "qid": "A03",
+      "index": 4,
+      "verdict": null,
+      "note": ""
+    },
+    {
+      "key": "c144",
+      "arm": "claude-grounded-v2",
+      "qid": "A12",
+      "index": 0,
+      "verdict": null,
+      "note": ""
+    },
+    {
+      "key": "c145",
+      "arm": "claude-grounded-v2",
+      "qid": "A13",
+      "index": 1,
+      "verdict": null,
+      "note": ""
+    },
+    {
+      "key": "c146",
+      "arm": "claude-grounded-v2",
+      "qid": "A07",
+      "index": 3,
+      "verdict": null,
+      "note": ""
+    },
+    {
+      "key": "c147",
+      "arm": "claude-grounded-v2",
+      "qid": "A13",
+      "index": 0,
+      "verdict": null,
+      "note": ""
+    },
+    {
+      "key": "c148",
+      "arm": "claude-grounded-v2",
+      "qid": "A20",
+      "index": 4,
+      "verdict": null,
+      "note": ""
+    },
+    {
+      "key": "c149",
+      "arm": "claude-grounded-v2",
+      "qid": "A02",
+      "index": 0,
+      "verdict": null,
+      "note": ""
+    },
+    {
+      "key": "c150",
+      "arm": "claude-grounded-v2",
+      "qid": "H10",
+      "index": 2,
+      "verdict": null,
+      "note": ""
+    },
+    {
+      "key": "c151",
+      "arm": "claude-grounded-v2",
+      "qid": "A03",
+      "index": 2,
+      "verdict": null,
+      "note": ""
+    },
+    {
+      "key": "c152",
+      "arm": "claude-grounded-v2",
+      "qid": "A07",
+      "index": 2,
+      "verdict": null,
+      "note": ""
+    },
+    {
+      "key": "c153",
+      "arm": "claude-grounded-v2",
+      "qid": "A06",
+      "index": 0,
+      "verdict": null,
+      "note": ""
+    },
+    {
+      "key": "c154",
+      "arm": "claude-grounded-v2",
+      "qid": "A01",
+      "index": 3,
+      "verdict": null,
+      "note": ""
+    },
+    {
+      "key": "c155",
+      "arm": "claude-grounded-v2",
+      "qid": "A17",
+      "index": 2,
+      "verdict": null,
+      "note": ""
+    },
+    {
+      "key": "c156",
+      "arm": "claude-grounded-v2",
+      "qid": "A10",
+      "index": 0,
+      "verdict": null,
+      "note": ""
+    },
+    {
+      "key": "c157",
+      "arm": "claude-grounded-v2",
+      "qid": "A20",
+      "index": 2,
+      "verdict": null,
+      "note": ""
+    },
+    {
+      "key": "c158",
+      "arm": "claude-grounded-v2",
+      "qid": "A01",
+      "index": 2,
+      "verdict": null,
+      "note": ""
+    },
+    {
+      "key": "c159",
+      "arm": "claude-grounded-v2",
+      "qid": "A09",
+      "index": 1,
+      "verdict": null,
+      "note": ""
+    },
+    {
+      "key": "c160",
+      "arm": "claude-grounded-v2",
+      "qid": "A15",
+      "index": 0,
+      "verdict": null,
+      "note": ""
+    },
+    {
+      "key": "c161",
+      "arm": "claude-grounded-v2",
+      "qid": "H12",
+      "index": 1,
+      "verdict": null,
+      "note": ""
+    },
+    {
+      "key": "c162",
+      "arm": "claude-grounded-v2",
+      "qid": "H12",
+      "index": 0,
+      "verdict": null,
+      "note": ""
+    },
+    {
+      "key": "c163",
+      "arm": "claude-grounded-v2",
+      "qid": "A09",
+      "index": 0,
+      "verdict": null,
+      "note": ""
+    },
+    {
+      "key": "c164",
+      "arm": "claude-grounded-v2",
+      "qid": "A03",
+      "index": 0,
+      "verdict": null,
+      "note": ""
+    },
+    {
+      "key": "c165",
+      "arm": "claude-grounded-v2",
+      "qid": "A03",
+      "index": 1,
+      "verdict": null,
+      "note": ""
+    },
+    {
+      "key": "c166",
+      "arm": "claude-grounded-v2",
+      "qid": "A07",
+      "index": 0,
+      "verdict": null,
+      "note": ""
+    },
+    {
+      "key": "c167",
+      "arm": "claude-grounded-v2",
+      "qid": "A05",
+      "index": 0,
+      "verdict": null,
+      "note": ""
+    },
+    {
+      "key": "c168",
+      "arm": "claude-grounded-v2",
+      "qid": "A17",
+      "index": 0,
+      "verdict": null,
+      "note": ""
+    },
+    {
+      "key": "c169",
+      "arm": "claude-grounded-v2",
+      "qid": "A10",
+      "index": 1,
+      "verdict": null,
+      "note": ""
+    },
+    {
+      "key": "c170",
+      "arm": "claude-grounded-v2",
+      "qid": "A01",
+      "index": 6,
+      "verdict": null,
+      "note": ""
+    },
+    {
+      "key": "c171",
+      "arm": "claude-grounded-v2",
+      "qid": "A11",
+      "index": 2,
+      "verdict": null,
+      "note": ""
+    },
+    {
+      "key": "c172",
+      "arm": "claude-grounded-v2",
+      "qid": "A18",
+      "index": 3,
+      "verdict": null,
+      "note": ""
+    },
+    {
+      "key": "c173",
+      "arm": "claude-grounded-v2",
+      "qid": "A19",
+      "index": 0,
+      "verdict": null,
+      "note": ""
+    },
+    {
+      "key": "c174",
+      "arm": "claude-grounded-v2",
+      "qid": "A15",
+      "index": 1,
+      "verdict": null,
+      "note": ""
+    },
+    {
+      "key": "c175",
+      "arm": "claude-grounded-v2",
+      "qid": "H10",
+      "index": 0,
+      "verdict": null,
+      "note": ""
+    },
+    {
+      "key": "c176",
+      "arm": "claude-grounded-v2",
+      "qid": "A07",
+      "index": 1,
+      "verdict": null,
+      "note": ""
+    },
+    {
+      "key": "c177",
+      "arm": "claude-grounded-v2",
+      "qid": "A19",
+      "index": 1,
+      "verdict": null,
+      "note": ""
+    },
+    {
+      "key": "c178",
+      "arm": "claude-grounded-v2",
+      "qid": "A01",
+      "index": 0,
+      "verdict": null,
+      "note": ""
+    },
+    {
+      "key": "c179",
+      "arm": "claude-grounded-v2",
+      "qid": "A02",
+      "index": 1,
+      "verdict": null,
+      "note": ""
+    },
+    {
+      "key": "c180",
+      "arm": "claude-grounded-v2",
+      "qid": "A17",
+      "index": 3,
+      "verdict": null,
+      "note": ""
+    },
+    {
+      "key": "c181",
+      "arm": "claude-grounded-v2",
+      "qid": "A08",
+      "index": 0,
+      "verdict": null,
+      "note": ""
+    },
+    {
+      "key": "c182",
+      "arm": "claude-grounded-v2",
+      "qid": "A02",
+      "index": 2,
+      "verdict": null,
+      "note": ""
+    },
+    {
+      "key": "c183",
+      "arm": "claude-grounded-v2",
+      "qid": "A20",
+      "index": 3,
+      "verdict": null,
+      "note": ""
+    },
+    {
+      "key": "c184",
+      "arm": "claude-grounded-v2",
+      "qid": "A01",
+      "index": 4,
+      "verdict": null,
+      "note": ""
+    },
+    {
+      "key": "c185",
+      "arm": "claude-grounded-v2",
+      "qid": "A03",
+      "index": 3,
+      "verdict": null,
+      "note": ""
+    },
+    {
+      "key": "c186",
+      "arm": "claude-grounded-v2",
+      "qid": "H09",
+      "index": 1,
+      "verdict": null,
+      "note": ""
+    },
+    {
+      "key": "c187",
+      "arm": "claude-grounded-v2",
+      "qid": "A16",
+      "index": 1,
+      "verdict": null,
+      "note": ""
+    },
+    {
+      "key": "c188",
+      "arm": "claude-grounded-v2",
+      "qid": "A11",
+      "index": 0,
+      "verdict": null,
+      "note": ""
+    },
+    {
+      "key": "c189",
+      "arm": "claude-grounded-v2",
+      "qid": "A18",
+      "index": 1,
+      "verdict": null,
+      "note": ""
+    },
+    {
+      "key": "c190",
+      "arm": "claude-grounded-v2",
+      "qid": "A18",
+      "index": 2,
+      "verdict": null,
+      "note": ""
+    },
+    {
+      "key": "c191",
+      "arm": "claude-grounded-v2",
+      "qid": "A14",
+      "index": 0,
+      "verdict": null,
+      "note": ""
+    }
+  ]
+}

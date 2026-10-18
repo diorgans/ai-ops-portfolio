@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gold Label Review</title>
+<style>
+  :root {
+    --bg: #f6f5f2; --card: #fff; --ink: #1d1d1b; --muted: #6b6a66; --line: #e2e0da;
+    --yes: #1f7a4d; --yes-bg: #e3f3ea; --no: #a8382a; --no-bg: #f8e6e2; --accent: #2f5bd3; --mark: #fff1a8;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #161615; --card: #20201e; --ink: #ecebe6; --muted: #9c9a93; --line: #34332f;
+      --yes: #6fd39f; --yes-bg: #1c3529; --no: #f08a7b; --no-bg: #3b221e; --accent: #8aa7ff; --mark: #5a4f12; }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  header { position: sticky; top: 0; z-index: 2; background: var(--bg); border-bottom: 1px solid var(--line); padding: 12px 16px; }
+  .bar { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; max-width: 860px; margin: 0 auto; }
+  .progress { flex: 1; min-width: 160px; height: 8px; background: var(--line); border-radius: 4px; overflow: hidden; }
+  .progress > div { height: 100%; background: var(--yes); width: 0; transition: width .2s; }
+  main { max-width: 860px; margin: 0 auto; padding: 16px; }
+  button { font: inherit; border: 1px solid var(--line); background: var(--card); color: var(--ink); padding: 6px 12px; border-radius: 6px; cursor: pointer; }
+  button.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+  button:disabled { opacity: .4; cursor: default; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 20px; }
+  .meta { display: flex; gap: 8px; align-items: center; color: var(--muted); font-size: 13px; margin-bottom: 6px; }
+  .tag { border: 1px solid var(--line); border-radius: 999px; padding: 1px 8px; }
+  h2 { font-size: 20px; margin: 0 0 12px; line-height: 1.35; }
+  .note { background: var(--bg); border-left: 3px solid var(--accent); padding: 8px 12px; margin: 0 0 14px; font-size: 14px; }
+  .point { border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px; margin: 10px 0; }
+  .point-head { display: flex; justify-content: space-between; gap: 12px; align-items: flex-start; flex-wrap: wrap; }
+  .point-text { flex: 1; min-width: 220px; font-weight: 500; }
+  .toggle { display: flex; gap: 0; }
+  .toggle button { border-radius: 0; font-size: 13px; }
+  .toggle button:first-child { border-radius: 6px 0 0 6px; }
+  .toggle button:last-child { border-radius: 0 6px 6px 0; border-left: 0; }
+  .toggle button.on.yes { background: var(--yes-bg); color: var(--yes); border-color: var(--yes); font-weight: 600; }
+  .toggle button.on.no { background: var(--no-bg); color: var(--no); border-color: var(--no); font-weight: 600; }
+  .changed { font-size: 12px; color: var(--accent); margin-top: 4px; }
+  .evidence { margin-top: 10px; font-size: 14px; color: var(--muted); }
+  .evidence .ctx { margin: 6px 0; padding: 8px 10px; background: var(--bg); border-radius: 6px; color: var(--ink); }
+  mark { background: var(--mark); color: inherit; padding: 0 2px; }
+  .evidence a { color: var(--accent); font-size: 12px; }
+  .outside { margin-top: 10px; font-size: 14px; }
+  .outside .lbl { font-size: 12px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); }
+  .gold { margin-top: 14px; font-size: 14px; }
+  .gold b { font-size: 15px; }
+  textarea { width: 100%; font: inherit; font-size: 14px; padding: 8px; border: 1px solid var(--line); border-radius: 6px; background: var(--card); color: var(--ink); margin-top: 12px; min-height: 52px; }
+  .actions { display: flex; gap: 8px; justify-content: space-between; margin-top: 14px; flex-wrap: wrap; }
+  .help { color: var(--muted); font-size: 13px; margin-top: 16px; }
+  kbd { border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 4px; padding: 0 5px; font-size: 12px; }
+  .done-badge { color: var(--yes); font-weight: 600; }
+  .jump { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 16px; }
+  .jump button { padding: 2px 6px; font-size: 12px; min-width: 44px; }
+  .jump button.ok { background: var(--yes-bg); color: var(--yes); border-color: var(--yes); }
+  .jump button.cur { outline: 2px solid var(--accent); }
+</style>
+</head>
+<body>
+<header>
+  <div class="bar">
+    <strong>Gold label review</strong>
+    <div class="progress"><div id="prog"></div></div>
+    <span id="count"></span>
+    <button class="primary" id="export">Download gold-labels.json</button>
+  </div>
+</header>
+<main>
+  <div class="card" id="card"></div>
+  <div class="jump" id="jump"></div>
+  <p class="help">
+    For each point, decide: <b>does the knowledge base actually state this?</b> True-but-not-in-the-pages counts as
+    <b>Not in KB</b>. For supported points, check the highlighted quote really says it.
+    Keys: <kbd>Enter</kbd> confirm &amp; next · <kbd>←</kbd>/<kbd>→</kbd> move · <kbd>1</kbd>–<kbd>4</kbd> flip a point.
+    Progress saves in this browser automatically.
+  </p>
+</main>
+<script>
+const DATA = __DATA__;
+const KEY = 'gold-labels-' + DATA.version;
+const qs = DATA.questions;
+let state = {};
+try { state = JSON.parse(localStorage.getItem(KEY)) || {}; } catch { state = {}; }
+let cur = Math.max(0, qs.findIndex((q) => !state[q.id]?.confirmed));
+if (cur < 0) cur = 0;
+
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch {} };
+const entry = (q) => (state[q.id] ??= { supported: q.points.map((p) => p.supported), note: '', confirmed: false });
+const gold = (sup) => sup.every(Boolean) ? 'answer' : sup.some(Boolean) ? 'partial' : 'abstain';
+const goldWords = { answer: 'Answer (fully supported)', partial: 'Partial', abstain: 'Abstain (not supported)' };
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+function render() {
+  const q = qs[cur]; const e = entry(q);
+  const proposed = gold(q.points.map((p) => p.supported)); const now = gold(e.supported);
+  let h = `<div class="meta"><span>${esc(q.id)}</span><span class="tag">${esc(q.type.replace('_', ' '))}</span>
+    <span>${cur + 1} of ${qs.length}</span>${e.confirmed ? '<span class="done-badge">✓ confirmed</span>' : ''}</div>
+    <h2>${esc(q.question)}</h2>`;
+  if (q.note) h += `<p class="note">${esc(q.note)}</p>`;
+  q.points.forEach((p, i) => {
+    const s = e.supported[i];
+    h += `<div class="point"><div class="point-head"><div class="point-text">${i + 1}. ${esc(p.text)}</div>
+      <div class="toggle"><button class="yes ${s ? 'on' : ''}" data-i="${i}" data-v="1">In KB</button>
+      <button class="no ${!s ? 'on' : ''}" data-i="${i}" data-v="0">Not in KB</button></div></div>`;
+    if (s !== p.supported) h += `<div class="changed">Changed from the proposal</div>`;
+    for (const ev of p.evidence ?? []) {
+      h += `<div class="evidence">Proposed evidence, page <b>${esc(ev.page)}</b>:
+        <div class="ctx">${esc(ev.before)}<mark>${esc(ev.match)}</mark>${esc(ev.after)}</div>
+        <a href="${esc(ev.url)}" target="_blank" rel="noopener">open page ↗</a></div>`;
+    }
+    if (!p.supported) {
+      h += `<div class="evidence">Searched the KB for: ${p.absent_terms.map((t) => `“${esc(t)}”`).join(', ')}, none found.</div>`;
+      if (p.true_outside_kb) h += `<div class="outside"><div class="lbl">True answer lives outside the KB</div>
+        “${esc(p.true_outside_kb.quote)}” <a href="${esc(p.true_outside_kb.url)}" target="_blank" rel="noopener">source ↗</a></div>`;
+    }
+    h += `</div>`;
+  });
+  h += `<div class="gold">Gold label: <b>${goldWords[now]}</b>${now !== proposed ? ` (proposed: ${goldWords[proposed]})` : ''}</div>
+    <textarea id="note" placeholder="Optional note: anything wrong with the question or the evidence?">${esc(e.note)}</textarea>
+    <div class="actions"><button id="prev" ${cur === 0 ? 'disabled' : ''}>← Back</button>
+    <button class="primary" id="ok">${e.confirmed ? 'Confirmed, next →' : 'Confirm & next →'}</button></div>`;
+  document.getElementById('card').innerHTML = h;
+
+  document.querySelectorAll('.toggle button').forEach((b) => b.onclick = () => flip(+b.dataset.i, b.dataset.v === '1'));
+  document.getElementById('note').oninput = (ev) => { e.note = ev.target.value; save(); };
+  document.getElementById('prev').onclick = () => go(cur - 1);
+  document.getElementById('ok').onclick = confirmNext;
+
+  const done = qs.filter((x) => state[x.id]?.confirmed).length;
+  document.getElementById('prog').style.width = (100 * done / qs.length) + '%';
+  document.getElementById('count').textContent = `${done} / ${qs.length} confirmed`;
+  document.getElementById('jump').innerHTML = qs.map((x, i) =>
+    `<button data-j="${i}" class="${state[x.id]?.confirmed ? 'ok' : ''} ${i === cur ? 'cur' : ''}">${esc(x.id)}</button>`).join('');
+  document.querySelectorAll('#jump button').forEach((b) => b.onclick = () => go(+b.dataset.j));
+}
+
+function flip(i, v) { const e = entry(qs[cur]); e.supported[i] = v; e.confirmed = false; save(); render(); }
+function go(i) { cur = Math.min(qs.length - 1, Math.max(0, i)); render(); window.scrollTo(0, 0); }
+function confirmNext() {
+  entry(qs[cur]).confirmed = true; save();
+  const next = qs.findIndex((q, i) => i > cur && !state[q.id]?.confirmed);
+  const any = qs.findIndex((q) => !state[q.id]?.confirmed);
+  go(next >= 0 ? next : any >= 0 ? any : cur);
+}
+
+document.addEventListener('keydown', (ev) => {
+  if (ev.target.tagName === 'TEXTAREA') return;
+  if (ev.key === 'Enter') { ev.preventDefault(); confirmNext(); }
+  else if (ev.key === 'ArrowRight') go(cur + 1);
+  else if (ev.key === 'ArrowLeft') go(cur - 1);
+  else if (/^[1-9]$/.test(ev.key)) { const i = +ev.key - 1; const e = entry(qs[cur]); if (i < e.supported.length) flip(i, !e.supported[i]); }
+});
+
+document.getElementById('export').onclick = () => {
+  const missing = qs.filter((q) => !state[q.id]?.confirmed).map((q) => q.id);
+  if (missing.length && !confirm(`${missing.length} question(s) not confirmed yet (${missing.slice(0, 6).join(', ')}${missing.length > 6 ? '…' : ''}). They will be marked unconfirmed. Download anyway?`)) return;
+  const out = {
+    version: DATA.version, exported_at: new Date().toISOString(),
+    labels: qs.map((q) => {
+      const e = entry(q);
+      return { id: q.id, confirmed: e.confirmed, supported: e.supported, gold: gold(e.supported),
+        proposed_gold: gold(q.points.map((p) => p.supported)), changed: e.supported.some((s, i) => s !== q.points[i].supported), note: e.note };
+    }),
+  };
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([JSON.stringify(out, null, 2)], { type: 'application/json' }));
+  a.download = 'gold-labels.json'; a.click();
+};
+
+render();
+</script>
+</body>
+</html>

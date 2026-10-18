@@ -1,12 +1,13 @@
 # AI-ops portfolio — Noah Chen
 
-Two projects. Both are about the same thing: **building something with an LLM, then measuring
+Three projects. All are about the same thing: **building something with an LLM, then measuring
 whether it actually works** — and reporting what didn't.
 
 | | what it is | headline |
 |---|---|---|
 | **[isya-eval](./isya-eval)** | accuracy eval of a live screenshot grader, and the fix it produced | **34% → 100%** stat capture, ~4× cheaper per scan |
 | **[lead-triage](./lead-triage)** | inbound lead scoring with Claude + n8n + HubSpot, measured before it was built | **36% baseline → 82.7%**, at $0.004 per lead |
+| **[questionnaire-assistant](./questionnaire-assistant)** | drafts cited questionnaire answers from docs, measured on when it should say "I don't know" | **0% overclaim** with a "not covered" slot; without it, quotes fully support only **36%** of claims on hard questions |
 
 ---
 
@@ -66,7 +67,37 @@ so that's what ships — $0.004 per lead.
 
 ---
 
-## How both projects are built
+## questionnaire-assistant — measuring the failure that costs money
+
+Claude drafts answers to customer questionnaire questions from 21 pages of n8n's public docs, with a
+word-for-word quote for every claim and a person approving before anything is sent. The metric
+isn't answer quality; it's the **overclaim rate**: confident answers the docs don't support.
+
+60 hand-labelled questions, a third of which the docs can't fully answer. For 16 of those points the
+true answer was found on n8n pages *outside* the knowledge base, so answering from memory would show
+up as a failure.
+
+The first result made my own test pointless: Claude without any instruction to refuse scored
+**0% overclaim**, so I report that and asked why. The answer was the **output format**. With a slot
+for "the docs don't cover this", Claude parked what it didn't know. Remove the slot and ask forced
+Yes/No questions, and it started **guessing from neighbouring text**, citing quotes that exist word
+for word, so a code check passes them. A blind human review found its quotes fully supported only
+**36%** of claims on the hard questions; with the final design, **68%**, and no wrong conclusions.
+
+| | overclaim ↓ | wrongly refuses ↓ |
+|---|---|---|
+| always answer | 100% | 0% |
+| keyword match, no model | 23% | 64% |
+| **final: not-covered slot + grounding rules + code check + human review** | **0%** | **0%** |
+
+Same lesson a third time: a 20-line code check after the model fixed every self-contradictory answer
+(4 → 0). Also reported: a first test set that was too easy, a question-writing bias the keyword
+baseline exposed, and a code check that threw out true claims until it was fixed. $3.40 in API
+calls for every run combined.
+
+---
+
+## How the projects are built
 
 - **The scoring definition is executable, not prose.** In lead-triage the same implementation drives
   the labelling tool, the eval harness and the production workflow, so the deployed system cannot

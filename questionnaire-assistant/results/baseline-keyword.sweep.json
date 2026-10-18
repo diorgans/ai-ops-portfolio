@@ -1,0 +1,128 @@
+[
+  {
+    "threshold": 0.2,
+    "overclaim": {
+      "hits": 28,
+      "total": 35,
+      "rate": 0.8
+    },
+    "falseRefusal": {
+      "hits": 0,
+      "total": 25,
+      "rate": 0
+    },
+    "abstentionRecall": {
+      "hits": 6,
+      "total": 24,
+      "rate": 0.25
+    }
+  },
+  {
+    "threshold": 0.3,
+    "overclaim": {
+      "hits": 19,
+      "total": 35,
+      "rate": 0.5428571428571428
+    },
+    "falseRefusal": {
+      "hits": 2,
+      "total": 25,
+      "rate": 0.08
+    },
+    "abstentionRecall": {
+      "hits": 12,
+      "total": 24,
+      "rate": 0.5
+    }
+  },
+  {
+    "threshold": 0.4,
+    "overclaim": {
+      "hits": 10,
+      "total": 35,
+      "rate": 0.2857142857142857
+    },
+    "falseRefusal": {
+      "hits": 8,
+      "total": 25,
+      "rate": 0.32
+    },
+    "abstentionRecall": {
+      "hits": 18,
+      "total": 24,
+      "rate": 0.75
+    }
+  },
+  {
+    "threshold": 0.5,
+    "overclaim": {
+      "hits": 8,
+      "total": 35,
+      "rate": 0.22857142857142856
+    },
+    "falseRefusal": {
+      "hits": 16,
+      "total": 25,
+      "rate": 0.64
+    },
+    "abstentionRecall": {
+      "hits": 20,
+      "total": 24,
+      "rate": 0.8333333333333334
+    }
+  },
+  {
+    "threshold": 0.6,
+    "overclaim": {
+      "hits": 4,
+      "total": 35,
+      "rate": 0.11428571428571428
+    },
+    "falseRefusal": {
+      "hits": 20,
+      "total": 25,
+      "rate": 0.8
+    },
+    "abstentionRecall": {
+      "hits": 21,
+      "total": 24,
+      "rate": 0.875
+    }
+  },
+  {
+    "threshold": 0.7,
+    "overclaim": {
+      "hits": 3,
+      "total": 35,
+      "rate": 0.08571428571428572
+    },
+    "falseRefusal": {
+      "hits": 22,
+      "total": 25,
+      "rate": 0.88
+    },
+    "abstentionRecall": {
+      "hits": 22,
+      "total": 24,
+      "rate": 0.9166666666666666
+    }
+  },
+  {
+    "threshold": 0.8,
+    "overclaim": {
+      "hits": 0,
+      "total": 35,
+      "rate": 0
+    },
+    "falseRefusal": {
+      "hits": 23,
+      "total": 25,
+      "rate": 0.92
+    },
+    "abstentionRecall": {
+      "hits": 24,
+      "total": 24,
+      "rate": 1
+    }
+  }
+]

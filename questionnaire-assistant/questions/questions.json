@@ -1,0 +1,1365 @@
+{
+  "version": "v2",
+  "note": "Drafted by Claude from the KB pages. Every label was confirmed or corrected by a human reviewer in the labelling page; the final labels are in gold-labels.json. supported points carry KB quotes (checked by scripts/check-questions.mjs). Unsupported points carry absent_terms (strings that must not appear in the KB, a sanity check, not proof) and, where known, the true answer from an n8n page outside the KB.",
+  "questions": [
+    {
+      "id": "A01",
+      "type": "answerable",
+      "question": "How can we get alerted when one of our production workflows fails?",
+      "points": [
+        {
+          "text": "Set an error workflow for the workflow in Workflow Settings; it runs when an execution fails (e.g. to send email or Slack alerts).",
+          "supported": true,
+          "evidence": [
+            {
+              "page": "handle-errors-gracefully",
+              "quote": "For each workflow, you can set an error workflow in Workflow Settings. It runs if an execution fails."
+            }
+          ]
+        },
+        {
+          "text": "The error workflow must start with the Error Trigger node.",
+          "supported": true,
+          "evidence": [
+            {
+              "page": "handle-errors-gracefully",
+              "quote": "The error workflow must start with the Error Trigger."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "A02",
+      "type": "answerable",
+      "question": "If the trigger node of a workflow is what fails, will the error workflow still receive an execution ID?",
+      "points": [
+        {
+          "text": "No. execution.id is not present when the error is in the trigger node of the main workflow, because the workflow doesn't execute.",
+          "supported": true,
+          "evidence": [
+            {
+              "page": "handle-errors-gracefully",
+              "quote": "Not present if the error is in the trigger node of the main workflow, as the workflow doesn't execute."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "A03",
+      "type": "answerable",
+      "question": "Do we have to build explicit loops so a node processes every item it receives?",
+      "points": [
+        {
+          "text": "No. Nodes usually run once for each item automatically.",
+          "supported": true,
+          "evidence": [
+            {
+              "page": "loop",
+              "quote": "Nodes usually run once for each item."
+            }
+          ]
+        },
+        {
+          "text": "Some nodes are exceptions and need a loop designed in (e.g. Code node in Run Once for All Items mode, HTTP Request pagination).",
+          "supported": true,
+          "evidence": [
+            {
+              "page": "loop",
+              "quote": "Nodes and operations where you need to design a loop into your workflow:"
+            },
+            {
+              "page": "loop",
+              "quote": "node in Run Once for All Items mode: processes all the items based on the entered code snippet."
+            },
+            {
+              "page": "loop",
+              "quote": "you must handle pagination yourself. If your API call returns paginated results you must create a loop to fetch one page at a time."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "A04",
+      "type": "answerable",
+      "question": "Our API returns paginated results. Will the HTTP Request node fetch all the pages for us?",
+      "note": "The KB says pagination must be handled by building a loop. Claude may 'know' that newer HTTP Request node versions have a pagination option. The KB-supported answer is what is scored.",
+      "points": [
+        {
+          "text": "Per the KB, no: with the HTTP Request node you must handle pagination yourself by creating a loop that fetches one page at a time.",
+          "supported": true,
+          "evidence": [
+            {
+              "page": "loop",
+              "quote": "you must handle pagination yourself. If your API call returns paginated results you must create a loop to fetch one page at a time."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "A05",
+      "type": "answerable",
+      "question": "A node receives many items but we only want it to act on the first one. How?",
+      "points": [
+        {
+          "text": "Toggle the Execute Once parameter in the node's Settings tab.",
+          "supported": true,
+          "evidence": [
+            {
+              "page": "loop",
+              "quote": "toggling the Execute Once parameter in the Settings tab of that node"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "A06",
+      "type": "answerable",
+      "question": "How should we process a large dataset without hitting an external API's rate limits?",
+      "points": [
+        {
+          "text": "Use the Loop Over Items node to batch the data and process batches.",
+          "supported": true,
+          "evidence": [
+            {
+              "page": "loop",
+              "quote": "This approach is useful for avoiding API rate limits when processing large incoming data"
+            },
+            {
+              "page": "loop",
+              "quote": "Use the Loop Over Items node when you want to loop until all items are processed."
+            },
+            {
+              "page": "loop",
+              "quote": "You can batch the data in groups and process these batches."
+            }
+          ]
+        },
+        {
+          "text": "Add a Wait node between batches to slow processing further.",
+          "supported": true,
+          "evidence": [
+            {
+              "page": "loop",
+              "quote": "Combine batching with a Wait node between batches to slow down processing further."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "A07",
+      "type": "answerable",
+      "question": "In a workflow that splits into several branches, in what order do the branches run?",
+      "points": [
+        {
+          "text": "For workflows created from n8n 1.0, each branch runs to completion before the next, ordered top to bottom on the canvas; leftmost first at the same height.",
+          "supported": true,
+          "evidence": [
+            {
+              "page": "understand-execution-order",
+              "quote": "executes each branch in turn, completing one branch before starting another. n8n orders the branches based on their position on the canvas"
+            },
+            {
+              "page": "understand-execution-order",
+              "quote": "If two branches are at the same height, the leftmost branch executes first."
+            }
+          ]
+        },
+        {
+          "text": "The execution order can be changed in workflow settings.",
+          "supported": true,
+          "evidence": [
+            {
+              "page": "understand-execution-order",
+              "quote": "You can change the execution order in your workflow settings."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "A08",
+      "type": "answerable",
+      "question": "Do sub-workflow executions count toward our plan's monthly execution limit?",
+      "points": [
+        {
+          "text": "No. Sub-workflow executions don't count towards the monthly execution or active workflow limits.",
+          "supported": true,
+          "evidence": [
+            {
+              "page": "break-workflows-into-smaller-parts",
+              "quote": "Sub-wokflow executions don't count towards your plan's monthly execution or active workflow limits."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "A09",
+      "type": "answerable",
+      "question": "Can we rely on pinned test data being used when the workflow runs in production?",
+      "points": [
+        {
+          "text": "No. Data pinning is for development; production executions ignore pinned data.",
+          "supported": true,
+          "evidence": [
+            {
+              "page": "pin-and-mock-data",
+              "quote": "Data pinning isn't available for production workflow executions."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "A10",
+      "type": "answerable",
+      "question": "Can we pin the output of a node that returns files (binary data)?",
+      "points": [
+        {
+          "text": "No. You can't pin data if the output includes binary data.",
+          "supported": true,
+          "evidence": [
+            {
+              "page": "pin-and-mock-data",
+              "quote": "You can't pin data if the output data includes binary data."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "A11",
+      "type": "answerable",
+      "question": "How much can we store in data tables, and what happens when we hit the limit?",
+      "points": [
+        {
+          "text": "By default all data tables in an instance share a 200 MiB limit (self-hosted can change it with N8N_DATA_TABLES_MAX_SIZE_BYTES).",
+          "supported": true,
+          "evidence": [
+            {
+              "page": "data-tables",
+              "quote": "By default, the total storage used by all data tables in an instance is limited to 200 MiB."
+            }
+          ]
+        },
+        {
+          "text": "n8n warns at 80% of the limit.",
+          "supported": true,
+          "evidence": [
+            {
+              "page": "data-tables",
+              "quote": "When your data tables approach 80% of your storage limit, n8n displays a warning."
+            }
+          ]
+        },
+        {
+          "text": "Exceeding the limit disables manual additions and causes workflow errors on insert/update.",
+          "supported": true,
+          "evidence": [
+            {
+              "page": "data-tables",
+              "quote": "Exceeding this limit will disable manual additions to tables and cause workflow execution errors during attempts to insert or update data."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "A12",
+      "type": "answerable",
+      "question": "Can our Code node read values directly from a data table?",
+      "points": [
+        {
+          "text": "No. Direct programmatic access to data tables from a Code node isn't supported.",
+          "supported": true,
+          "evidence": [
+            {
+              "page": "data-tables",
+              "quote": "Direct programmatic access to data tables from a Code node isn't supported."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "A13",
+      "type": "answerable",
+      "question": "Which plans include custom variables, and who is allowed to create them?",
+      "points": [
+        {
+          "text": "n8n Cloud Pro and Enterprise; self-hosted Business and Enterprise.",
+          "supported": true,
+          "evidence": [
+            {
+              "page": "define-custom-variables",
+              "quote": "n8n Cloud: Pro, Enterprise Self-hosted: Business, Enterprise"
+            }
+          ]
+        },
+        {
+          "text": "Only instance owners and admins can create variables.",
+          "supported": true,
+          "evidence": [
+            {
+              "page": "define-custom-variables",
+              "quote": "Only instance owners and admins can create variables."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "A14",
+      "type": "answerable",
+      "question": "If a project variable and a global variable have the same key, which value do the project's workflows get?",
+      "points": [
+        {
+          "text": "The project-scoped variable takes precedence within that project's workflows.",
+          "supported": true,
+          "evidence": [
+            {
+              "page": "define-custom-variables",
+              "quote": "the project-scoped variable value takes precedence and overrides the global variable value within that project's workflows."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "A15",
+      "type": "answerable",
+      "question": "On n8n Cloud, can the JavaScript Code node import external npm packages?",
+      "points": [
+        {
+          "text": "No, external npm modules can't be imported on Cloud.",
+          "supported": true,
+          "evidence": [
+            {
+              "page": "using-the-code-node",
+              "quote": "If you use n8n Cloud, you can't import external npm modules."
+            }
+          ]
+        },
+        {
+          "text": "Two modules are available: the crypto Node.js module and the moment npm package.",
+          "supported": true,
+          "evidence": [
+            {
+              "page": "using-the-code-node",
+              "quote": "n8n makes two modules available for you: crypto Node.js module moment npm package"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "A16",
+      "type": "answerable",
+      "question": "Can the Code node make HTTP requests or read files from disk?",
+      "points": [
+        {
+          "text": "No. Use the HTTP Request node and the Read/Write File From Disk node instead.",
+          "supported": true,
+          "evidence": [
+            {
+              "page": "using-the-code-node",
+              "quote": "You can't access the file system or make HTTP requests. Use the following nodes instead:"
+            },
+            {
+              "page": "using-the-code-node",
+              "quote": "Use the following nodes instead: Read/Write File From Disk HTTP Request"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "A17",
+      "type": "answerable",
+      "question": "Can we stop a credential from being sent to arbitrary URLs through the HTTP Request node?",
+      "points": [
+        {
+          "text": "Yes, the Allowed HTTP Request Domains field controls which domains the credential can be used against in the HTTP Request node.",
+          "supported": true,
+          "evidence": [
+            {
+              "page": "create-and-edit-credentials",
+              "quote": "It controls which domains the credential is permitted to be used against when the credential is selected in an HTTP Request node."
+            }
+          ]
+        },
+        {
+          "text": "Options are All, Specific Domains (comma-separated list), or None.",
+          "supported": true,
+          "evidence": [
+            {
+              "page": "create-and-edit-credentials",
+              "quote": "Specific Domains: Restrict to specific domains"
+            },
+            {
+              "page": "create-and-edit-credentials",
+              "quote": "None: The credential is blocked entirely from use in the HTTP Request node."
+            },
+            {
+              "page": "create-and-edit-credentials",
+              "quote": "The field has three options: All: The credential can be used against any URL."
+            },
+            {
+              "page": "create-and-edit-credentials",
+              "quote": "provide a comma-separated list like"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "A18",
+      "type": "answerable",
+      "question": "If we edit a workflow that is already live, do the edits affect production straight away?",
+      "points": [
+        {
+          "text": "No. Edits are auto-saved as drafts; production executions use the published version until you publish again.",
+          "supported": true,
+          "evidence": [
+            {
+              "page": "save-and-publish-workflows",
+              "quote": "All edits remain in draft until you publish."
+            },
+            {
+              "page": "save-and-publish-workflows",
+              "quote": "Production executions will use this published version, not your latest edits."
+            },
+            {
+              "page": "save-and-publish-workflows",
+              "quote": "Changes save automatically as you edit, typically within 1 to 5 seconds."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "A19",
+      "type": "answerable",
+      "question": "Can we hide the input and output data of nodes in production execution records?",
+      "points": [
+        {
+          "text": "Yes. The Redact production execution data workflow setting hides each node's input and output data.",
+          "supported": true,
+          "evidence": [
+            {
+              "page": "configure-workflow-settings",
+              "quote": "When set to Redact, n8n hides the input and output data of each node and replaces it with a redacted indicator."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "A20",
+      "type": "answerable",
+      "question": "After fixing a workflow, how can we re-run a failed production execution with its original data?",
+      "points": [
+        {
+          "text": "In the workflow's Executions tab select the failed execution and choose Debug in editor; n8n copies the data in and pins it in the first node.",
+          "supported": true,
+          "evidence": [
+            {
+              "page": "debug-executions",
+              "quote": "For failed executions: select Debug in editor."
+            },
+            {
+              "page": "debug-executions",
+              "quote": "n8n copies the execution data into your current workflow, and pins the data in the first node in the workflow."
+            },
+            {
+              "page": "debug-executions",
+              "quote": "In your workflow, select the Executions tab to view the Executions list."
+            }
+          ]
+        },
+        {
+          "text": "Available on all n8n Cloud plans and self-hosted Registered Community, Business and Enterprise.",
+          "supported": true,
+          "evidence": [
+            {
+              "page": "debug-executions",
+              "quote": "n8n Cloud: All plans"
+            },
+            {
+              "page": "debug-executions",
+              "quote": "Self-hosted: Registered Community, Business, Enterprise"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "P01",
+      "type": "partial",
+      "question": "Do sub-workflow runs and error-workflow runs count toward our execution quota?",
+      "points": [
+        {
+          "text": "Sub-workflow executions don't count.",
+          "supported": true,
+          "evidence": [
+            {
+              "page": "break-workflows-into-smaller-parts",
+              "quote": "Sub-wokflow executions don't count towards your plan's monthly execution or active workflow limits."
+            }
+          ]
+        },
+        {
+          "text": "Whether error-workflow runs count.",
+          "supported": false,
+          "absent_terms": [
+            "error workflow executions",
+            "error workflows don't count"
+          ],
+          "true_outside_kb": {
+            "url": "https://docs.n8n.io/build/understand-workflows/understand-executions",
+            "quote": "Error workflow executions:"
+          }
+        }
+      ]
+    },
+    {
+      "id": "P02",
+      "type": "partial",
+      "question": "How many outputs does the Compare Datasets node have, and what is each one called?",
+      "points": [
+        {
+          "text": "Up to four output streams.",
+          "supported": true,
+          "evidence": [
+            {
+              "page": "merge-data",
+              "quote": "It outputs up to four different data streams."
+            }
+          ]
+        },
+        {
+          "text": "The names of the outputs.",
+          "supported": false,
+          "absent_terms": [
+            "In A only",
+            "In B only",
+            "Same Branch",
+            "Different Branch"
+          ],
+          "true_outside_kb": {
+            "url": "https://docs.n8n.io/integrations/builtin/core-nodes/n8n-nodes-base.comparedatasets",
+            "quote": "In A only Branch: Contains data that occurs only in the first input."
+          }
+        }
+      ]
+    },
+    {
+      "id": "P03",
+      "type": "partial",
+      "question": "Can we make a workflow time out automatically, and what is the longest timeout allowed on a self-hosted instance?",
+      "points": [
+        {
+          "text": "Yes, the Timeout Workflow setting cancels an execution after a set time.",
+          "supported": true,
+          "evidence": [
+            {
+              "page": "configure-workflow-settings",
+              "quote": "Whether n8n should cancel the current workflow execution after a certain amount of time elapses."
+            }
+          ]
+        },
+        {
+          "text": "The maximum timeout on self-hosted.",
+          "supported": false,
+          "absent_terms": [
+            "EXECUTIONS_TIMEOUT_MAX",
+            "3600"
+          ],
+          "true_outside_kb": {
+            "url": "https://docs.n8n.io/deploy/host-n8n/configure-n8n/basic-configuration/use-environment-variables/executions",
+            "quote": "The maximum execution time (in seconds) that users can set for an individual workflow."
+          }
+        }
+      ]
+    },
+    {
+      "id": "P04",
+      "type": "partial",
+      "question": "Can we use data tables to store markers that stop duplicate runs, and is there a maximum number of rows per table?",
+      "points": [
+        {
+          "text": "Yes, storing markers to prevent duplicate runs is one of the scenarios the docs give for data tables.",
+          "supported": true,
+          "evidence": [
+            {
+              "page": "data-tables",
+              "quote": "without relying on external database systems for scenarios such as:"
+            },
+            {
+              "page": "data-tables",
+              "quote": "Storing markers to prevent duplicate runs or control workflow triggers"
+            }
+          ]
+        },
+        {
+          "text": "A per-table row limit.",
+          "supported": false,
+          "absent_terms": [
+            "maximum number of rows",
+            "row limit"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "P05",
+      "type": "partial",
+      "question": "Can the Code node run Python, and which Python version does it use?",
+      "points": [
+        {
+          "text": "Yes. Native Python support using task runners is available from n8n 1.111.0 (stable as of n8n 2).",
+          "supported": true,
+          "evidence": [
+            {
+              "page": "using-the-code-node",
+              "quote": "Native Python support using task runners is available from n8n 1.111.0."
+            }
+          ]
+        },
+        {
+          "text": "The Python version.",
+          "supported": false,
+          "absent_terms": [
+            "Python 3.",
+            "python version"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "P06",
+      "type": "partial",
+      "question": "How quickly does n8n save edits, and for how long can we go back to earlier versions?",
+      "points": [
+        {
+          "text": "Changes save automatically, typically within 1 to 5 seconds.",
+          "supported": true,
+          "evidence": [
+            {
+              "page": "save-and-publish-workflows",
+              "quote": "Changes save automatically as you edit, typically within 1 to 5 seconds."
+            }
+          ]
+        },
+        {
+          "text": "How long version history is kept.",
+          "supported": false,
+          "absent_terms": [
+            "24 hours",
+            "five days",
+            "5 days"
+          ],
+          "true_outside_kb": {
+            "url": "https://docs.n8n.io/build/manage-workflows/view-change-history",
+            "quote": "Versions from the last 24 hours are available for all users."
+          }
+        }
+      ]
+    },
+    {
+      "id": "P07",
+      "type": "partial",
+      "question": "Can one error workflow serve several workflows, and can we test it by running the failing workflow manually?",
+      "points": [
+        {
+          "text": "Yes, the same error workflow can be used for multiple workflows.",
+          "supported": true,
+          "evidence": [
+            {
+              "page": "handle-errors-gracefully",
+              "quote": "You can use the same error workflow for multiple workflows."
+            }
+          ]
+        },
+        {
+          "text": "Whether manual runs trigger the error workflow.",
+          "supported": false,
+          "absent_terms": [
+            "can't test error workflows",
+            "only runs when an automatic workflow errors"
+          ],
+          "true_outside_kb": {
+            "url": "https://docs.n8n.io/integrations/builtin/core-nodes/n8n-nodes-base.errortrigger",
+            "quote": "You can't test error workflows when running workflows manually."
+          }
+        }
+      ]
+    },
+    {
+      "id": "P08",
+      "type": "partial",
+      "question": "Is the Wait node suitable for rate limiting, and what is the longest it can wait?",
+      "points": [
+        {
+          "text": "Yes, waiting is useful to rate limit calls to a service.",
+          "supported": true,
+          "evidence": [
+            {
+              "page": "wait",
+              "quote": "This is useful if you need to rate limit your calls to a service"
+            }
+          ]
+        },
+        {
+          "text": "The maximum wait duration.",
+          "supported": false,
+          "absent_terms": [
+            "maximum wait",
+            "longest"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "P09",
+      "type": "partial",
+      "question": "Does the Remove Duplicates node remember items across executions, and for how long?",
+      "points": [
+        {
+          "text": "Yes, it removes items seen in previous executions of the workflow.",
+          "supported": true,
+          "evidence": [
+            {
+              "page": "filter-out-unwanted-data",
+              "quote": "To remove items that have been seen in previous executions of a workflow, use the Remove Duplicates node."
+            }
+          ]
+        },
+        {
+          "text": "How long it remembers them.",
+          "supported": false,
+          "absent_terms": [
+            "history size",
+            "how long"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "P10",
+      "type": "partial",
+      "question": "Can credential fields be filled dynamically with expressions, and are credentials encrypted at rest?",
+      "note": "Trap: the KB says credentials are 'securely stored'. That does not state encryption. Treat a claim of encryption backed by that quote as unsupported.",
+      "points": [
+        {
+          "text": "Yes, expressions can set credential fields dynamically.",
+          "supported": true,
+          "evidence": [
+            {
+              "page": "create-and-edit-credentials",
+              "quote": "to set credentials dynamically as your workflow runs"
+            }
+          ]
+        },
+        {
+          "text": "Whether credentials are encrypted at rest.",
+          "supported": false,
+          "absent_terms": [
+            "encrypt",
+            "N8N_ENCRYPTION_KEY"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "N01",
+      "type": "near_miss",
+      "question": "Does our error workflow need to be published for it to run?",
+      "points": [
+        {
+          "text": "Whether the error workflow must be published.",
+          "supported": false,
+          "absent_terms": [
+            "don't have to publish",
+            "doesn't need to be published"
+          ],
+          "true_outside_kb": {
+            "url": "https://docs.n8n.io/integrations/builtin/core-nodes/n8n-nodes-base.errortrigger",
+            "quote": "If a workflow uses the Error Trigger node, you don't have to publish the workflow."
+          }
+        }
+      ]
+    },
+    {
+      "id": "N02",
+      "type": "near_miss",
+      "question": "When a Wait node pauses for 30 seconds, does n8n write the execution to the database and free up the process?",
+      "points": [
+        {
+          "text": "What happens to execution data during short waits.",
+          "supported": false,
+          "absent_terms": [
+            "65 seconds",
+            "offload"
+          ],
+          "true_outside_kb": {
+            "url": "https://docs.n8n.io/integrations/builtin/core-nodes/n8n-nodes-base.wait",
+            "quote": "For wait times less than 65 seconds, the workflow doesn't offload execution data to the database."
+          }
+        }
+      ]
+    },
+    {
+      "id": "N03",
+      "type": "near_miss",
+      "question": "What is the maximum payload size a webhook trigger accepts?",
+      "points": [
+        {
+          "text": "The webhook payload limit.",
+          "supported": false,
+          "absent_terms": [
+            "16MB",
+            "16 MiB",
+            "N8N_PAYLOAD_SIZE_MAX",
+            "payload size"
+          ],
+          "true_outside_kb": {
+            "url": "https://docs.n8n.io/integrations/builtin/core-nodes/n8n-nodes-base.webhook",
+            "quote": "The webhook maximum payload size is 16MB."
+          }
+        }
+      ]
+    },
+    {
+      "id": "N04",
+      "type": "near_miss",
+      "question": "By default, how long does a self-hosted n8n keep execution history before deleting it?",
+      "points": [
+        {
+          "text": "Default execution data retention.",
+          "supported": false,
+          "absent_terms": [
+            "EXECUTIONS_DATA_MAX_AGE",
+            "336 hours",
+            "EXECUTIONS_DATA_PRUNE"
+          ],
+          "true_outside_kb": {
+            "url": "https://docs.n8n.io/deploy/host-n8n/configure-n8n/basic-configuration/use-environment-variables/executions",
+            "quote": "The execution age (in hours) before it's deleted."
+          }
+        }
+      ]
+    },
+    {
+      "id": "N05",
+      "type": "near_miss",
+      "question": "On n8n Cloud Pro, how far back can we restore an earlier version of a workflow?",
+      "points": [
+        {
+          "text": "Version history window per plan.",
+          "supported": false,
+          "absent_terms": [
+            "five days",
+            "5 days",
+            "24 hours"
+          ],
+          "true_outside_kb": {
+            "url": "https://docs.n8n.io/build/manage-workflows/view-change-history",
+            "quote": "Versions from the last five days are available on n8n Cloud Pro."
+          }
+        }
+      ]
+    },
+    {
+      "id": "N06",
+      "type": "near_miss",
+      "question": "Can the Merge node join two inputs on a shared field, like a SQL join on customer ID?",
+      "points": [
+        {
+          "text": "Merge node join-by-field capability.",
+          "supported": false,
+          "absent_terms": [
+            "Matching Fields",
+            "Combine By",
+            "SQL Query"
+          ],
+          "true_outside_kb": {
+            "url": "https://docs.n8n.io/integrations/builtin/core-nodes/n8n-nodes-base.merge",
+            "quote": "Select an option in Combine By to determine how you want to merge the input data."
+          }
+        }
+      ]
+    },
+    {
+      "id": "N07",
+      "type": "near_miss",
+      "question": "Can the Schedule Trigger run a workflow every 30 seconds?",
+      "points": [
+        {
+          "text": "Schedule Trigger seconds interval.",
+          "supported": false,
+          "absent_terms": [
+            "Seconds Between Triggers",
+            "every 30 seconds"
+          ],
+          "true_outside_kb": {
+            "url": "https://docs.n8n.io/integrations/builtin/core-nodes/n8n-nodes-base.scheduletrigger",
+            "quote": "Seconds Between Triggers: Enter the number of seconds between each workflow trigger."
+          }
+        }
+      ]
+    },
+    {
+      "id": "N08",
+      "type": "near_miss",
+      "question": "Is there a limit on how many custom variables we can create?",
+      "note": "Adjacent fact present: the KB gives key and value length limits, not a count limit.",
+      "points": [
+        {
+          "text": "A limit on the number of variables.",
+          "supported": false,
+          "absent_terms": [
+            "maximum number of variables",
+            "number of variables"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "N09",
+      "type": "near_miss",
+      "question": "Do pinned node outputs get included when we export a workflow and import it into another instance?",
+      "points": [
+        {
+          "text": "Whether pinned data travels with exported workflows.",
+          "supported": false,
+          "absent_terms": [
+            "pinned data is exported",
+            "export a workflow"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "O01",
+      "type": "off_topic",
+      "question": "Does n8n support SAML single sign-on?",
+      "points": [
+        {
+          "text": "SAML SSO support.",
+          "supported": false,
+          "absent_terms": [
+            "SAML",
+            "single sign-on",
+            "SSO"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "O02",
+      "type": "off_topic",
+      "question": "Is n8n SOC 2 certified?",
+      "points": [
+        {
+          "text": "SOC 2 status.",
+          "supported": false,
+          "absent_terms": [
+            "SOC 2",
+            "SOC2"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "O03",
+      "type": "off_topic",
+      "question": "Which Redis version does n8n's queue mode require?",
+      "points": [
+        {
+          "text": "Queue mode Redis requirements.",
+          "supported": false,
+          "absent_terms": [
+            "Redis version",
+            "queue mode"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "O04",
+      "type": "off_topic",
+      "question": "Which vector databases can n8n's AI Agent use for retrieval?",
+      "points": [
+        {
+          "text": "Supported vector stores.",
+          "supported": false,
+          "absent_terms": [
+            "vector",
+            "Pinecone",
+            "Qdrant"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "O05",
+      "type": "off_topic",
+      "question": "In which region are n8n Cloud instances hosted?",
+      "points": [
+        {
+          "text": "Cloud hosting region.",
+          "supported": false,
+          "absent_terms": [
+            "Frankfurt",
+            "data residency",
+            "region"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "O06",
+      "type": "off_topic",
+      "question": "Will n8n sign a HIPAA Business Associate Agreement?",
+      "points": [
+        {
+          "text": "HIPAA BAA availability.",
+          "supported": false,
+          "absent_terms": [
+            "HIPAA",
+            "Business Associate"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "H01",
+      "type": "near_miss",
+      "set": "hard",
+      "style": "yes_no",
+      "question": "Questionnaire item, answer Yes or No: Can we test our error workflow by manually running the workflow that fails?",
+      "points": [
+        {
+          "text": "Whether manual runs trigger the error workflow.",
+          "supported": false,
+          "absent_terms": [
+            "can't test error workflows",
+            "only runs when an automatic workflow errors"
+          ],
+          "true_outside_kb": {
+            "url": "https://docs.n8n.io/integrations/builtin/core-nodes/n8n-nodes-base.errortrigger",
+            "quote": "You can't test error workflows when running workflows manually."
+          }
+        }
+      ]
+    },
+    {
+      "id": "H02",
+      "type": "near_miss",
+      "set": "hard",
+      "style": "yes_no",
+      "question": "Questionnaire item, answer Yes or No: Must an error workflow be published before it will run?",
+      "points": [
+        {
+          "text": "Whether the error workflow must be published.",
+          "supported": false,
+          "absent_terms": [
+            "don't have to publish",
+            "doesn't need to be published"
+          ],
+          "true_outside_kb": {
+            "url": "https://docs.n8n.io/integrations/builtin/core-nodes/n8n-nodes-base.errortrigger",
+            "quote": "If a workflow uses the Error Trigger node, you don't have to publish the workflow."
+          }
+        }
+      ]
+    },
+    {
+      "id": "H03",
+      "type": "near_miss",
+      "set": "hard",
+      "style": "yes_no",
+      "question": "Questionnaire item, answer Yes or No: Do error workflow executions count toward our monthly execution quota?",
+      "points": [
+        {
+          "text": "Whether error-workflow runs count.",
+          "supported": false,
+          "absent_terms": [
+            "error workflow executions",
+            "error workflows don't count"
+          ],
+          "true_outside_kb": {
+            "url": "https://docs.n8n.io/build/understand-workflows/understand-executions",
+            "quote": "Error workflow executions:"
+          }
+        }
+      ]
+    },
+    {
+      "id": "H04",
+      "type": "near_miss",
+      "set": "hard",
+      "style": "yes_no",
+      "question": "Questionnaire item, answer Yes or No: When a Wait node pauses for 30 seconds, is the execution offloaded to the database?",
+      "points": [
+        {
+          "text": "What happens to execution data during short waits.",
+          "supported": false,
+          "absent_terms": [
+            "65 seconds",
+            "offload"
+          ],
+          "true_outside_kb": {
+            "url": "https://docs.n8n.io/integrations/builtin/core-nodes/n8n-nodes-base.wait",
+            "quote": "For wait times less than 65 seconds, the workflow doesn't offload execution data to the database."
+          }
+        }
+      ]
+    },
+    {
+      "id": "H05",
+      "type": "near_miss",
+      "set": "hard",
+      "style": "yes_no",
+      "question": "Questionnaire item, answer Yes or No: On n8n Cloud Pro, can we restore an unnamed workflow version from 30 days ago?",
+      "points": [
+        {
+          "text": "Version history window per plan.",
+          "supported": false,
+          "absent_terms": [
+            "five days",
+            "5 days",
+            "30 days"
+          ],
+          "true_outside_kb": {
+            "url": "https://docs.n8n.io/build/manage-workflows/view-change-history",
+            "quote": "Versions from the last five days are available on n8n Cloud Pro."
+          }
+        }
+      ]
+    },
+    {
+      "id": "H06",
+      "type": "near_miss",
+      "set": "hard",
+      "style": "yes_no",
+      "question": "Questionnaire item, answer Yes or No: Is one minute the shortest interval the Schedule Trigger supports?",
+      "points": [
+        {
+          "text": "Schedule Trigger seconds interval.",
+          "supported": false,
+          "absent_terms": [
+            "Seconds Between Triggers",
+            "one minute"
+          ],
+          "true_outside_kb": {
+            "url": "https://docs.n8n.io/integrations/builtin/core-nodes/n8n-nodes-base.scheduletrigger",
+            "quote": "Seconds Between Triggers: Enter the number of seconds between each workflow trigger."
+          }
+        }
+      ]
+    },
+    {
+      "id": "H07",
+      "type": "near_miss",
+      "set": "hard",
+      "style": "false_premise",
+      "question": "Since n8n encrypts stored credentials with AES-256, how do we rotate the encryption key?",
+      "points": [
+        {
+          "text": "That credentials are encrypted with AES-256.",
+          "supported": false,
+          "absent_terms": [
+            "AES",
+            "encryption key"
+          ]
+        },
+        {
+          "text": "How to rotate the key.",
+          "supported": false,
+          "absent_terms": [
+            "rotate"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "H08",
+      "type": "partial",
+      "set": "hard",
+      "style": "false_premise",
+      "question": "Given that each data table is capped at 10,000 rows, how should we split a larger dataset?",
+      "points": [
+        {
+          "text": "The documented limit is total storage across all data tables, 200 MiB by default.",
+          "supported": true,
+          "evidence": [
+            {
+              "page": "data-tables",
+              "quote": "By default, the total storage used by all data tables in an instance is limited to 200 MiB."
+            }
+          ]
+        },
+        {
+          "text": "A 10,000-row cap per table.",
+          "supported": false,
+          "absent_terms": [
+            "10,000",
+            "row limit",
+            "maximum number of rows"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "H09",
+      "type": "answerable",
+      "set": "hard",
+      "style": "false_premise",
+      "question": "Since sub-workflow executions count toward our execution limit, should we avoid splitting workflows into sub-workflows to save quota?",
+      "points": [
+        {
+          "text": "No. Sub-workflow executions don't count toward the plan's monthly execution limit.",
+          "supported": true,
+          "evidence": [
+            {
+              "page": "break-workflows-into-smaller-parts",
+              "quote": "Sub-wokflow executions don't count towards your plan's monthly execution or active workflow limits."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "H10",
+      "type": "answerable",
+      "set": "hard",
+      "style": "false_premise",
+      "question": "Because the Code node on n8n Cloud can import any npm package, which package should we use there to call external APIs?",
+      "points": [
+        {
+          "text": "On n8n Cloud the Code node can't import external npm modules.",
+          "supported": true,
+          "evidence": [
+            {
+              "page": "using-the-code-node",
+              "quote": "If you use n8n Cloud, you can't import external npm modules."
+            }
+          ]
+        },
+        {
+          "text": "The Code node can't make HTTP requests; use the HTTP Request node instead.",
+          "supported": true,
+          "evidence": [
+            {
+              "page": "using-the-code-node",
+              "quote": "You can't access the file system or make HTTP requests."
+            },
+            {
+              "page": "using-the-code-node",
+              "quote": "Use the following nodes instead: Read/Write File From Disk HTTP Request"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "H11",
+      "type": "answerable",
+      "set": "hard",
+      "style": "yes_no",
+      "question": "Questionnaire item, answer Yes or No: Can several workflows share the same error workflow?",
+      "points": [
+        {
+          "text": "Yes, one error workflow can serve multiple workflows.",
+          "supported": true,
+          "evidence": [
+            {
+              "page": "handle-errors-gracefully",
+              "quote": "You can use the same error workflow for multiple workflows."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "H12",
+      "type": "answerable",
+      "set": "hard",
+      "style": "yes_no",
+      "question": "Questionnaire item, answer Yes or No: Do production executions run our latest saved edits before we publish them?",
+      "points": [
+        {
+          "text": "No. Production executions use the published version, not the latest edits.",
+          "supported": true,
+          "evidence": [
+            {
+              "page": "save-and-publish-workflows",
+              "quote": "Production executions will use this published version, not your latest edits."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "H13",
+      "type": "answerable",
+      "set": "hard",
+      "style": "yes_no",
+      "question": "Questionnaire item, answer Yes or No: Can we make a workflow fail on purpose so that its error workflow runs?",
+      "points": [
+        {
+          "text": "Yes, with the Stop And Error node.",
+          "supported": true,
+          "evidence": [
+            {
+              "page": "handle-errors-gracefully",
+              "quote": "You can add the Stop And Error node to your workflow to force executions to fail under your chosen circumstances, and trigger the error workflow."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "H14",
+      "type": "near_miss",
+      "set": "hard",
+      "style": "kb_vocabulary",
+      "question": "What is the maximum Batch Size the Loop Over Items node accepts?",
+      "points": [
+        {
+          "text": "A maximum Batch Size.",
+          "supported": false,
+          "absent_terms": [
+            "maximum batch size",
+            "largest batch"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "H15",
+      "type": "near_miss",
+      "set": "hard",
+      "style": "yes_no",
+      "question": "Questionnaire item, answer Yes or No: Can we raise the 200 MiB data table storage limit on n8n Cloud?",
+      "points": [
+        {
+          "text": "Whether the storage limit can be raised on n8n Cloud.",
+          "supported": false,
+          "absent_terms": [
+            "on n8n Cloud, you can",
+            "Cloud users can"
+          ]
+        }
+      ]
+    }
+  ]
+}

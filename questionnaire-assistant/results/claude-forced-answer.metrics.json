@@ -1,0 +1,334 @@
+{
+  "arm": "claude-forced-answer",
+  "questions": 45,
+  "matrix": {
+    "answer": {
+      "answered": 20,
+      "partial": 0,
+      "abstained": 0,
+      "invalid": 0
+    },
+    "partial": {
+      "answered": 10,
+      "partial": 0,
+      "abstained": 0,
+      "invalid": 0
+    },
+    "abstain": {
+      "answered": 15,
+      "partial": 0,
+      "abstained": 0,
+      "invalid": 0
+    }
+  },
+  "overclaim": {
+    "hits": 25,
+    "total": 25,
+    "rate": 1
+  },
+  "abstentionRecall": {
+    "hits": 0,
+    "total": 15,
+    "rate": 0
+  },
+  "abstentionRecallOffTopic": {
+    "hits": 0,
+    "total": 6,
+    "rate": 0
+  },
+  "abstentionRecallNearMiss": {
+    "hits": 0,
+    "total": 9,
+    "rate": 0
+  },
+  "falseRefusal": {
+    "hits": 0,
+    "total": 20,
+    "rate": 0
+  },
+  "hedge": {
+    "hits": 0,
+    "total": 20,
+    "rate": 0
+  },
+  "invalid": {
+    "hits": 0,
+    "total": 45,
+    "rate": 0
+  },
+  "claims": 168,
+  "uncitedClaims": 18,
+  "claimsWithQuotesThatExist": 146,
+  "rows": [
+    {
+      "id": "A01",
+      "gold": "answer",
+      "subtype": "answerable",
+      "decision": "answered"
+    },
+    {
+      "id": "A02",
+      "gold": "answer",
+      "subtype": "answerable",
+      "decision": "answered"
+    },
+    {
+      "id": "A03",
+      "gold": "answer",
+      "subtype": "answerable",
+      "decision": "answered"
+    },
+    {
+      "id": "A04",
+      "gold": "answer",
+      "subtype": "answerable",
+      "decision": "answered"
+    },
+    {
+      "id": "A05",
+      "gold": "answer",
+      "subtype": "answerable",
+      "decision": "answered"
+    },
+    {
+      "id": "A06",
+      "gold": "answer",
+      "subtype": "answerable",
+      "decision": "answered"
+    },
+    {
+      "id": "A07",
+      "gold": "answer",
+      "subtype": "answerable",
+      "decision": "answered"
+    },
+    {
+      "id": "A08",
+      "gold": "answer",
+      "subtype": "answerable",
+      "decision": "answered"
+    },
+    {
+      "id": "A09",
+      "gold": "answer",
+      "subtype": "answerable",
+      "decision": "answered"
+    },
+    {
+      "id": "A10",
+      "gold": "answer",
+      "subtype": "answerable",
+      "decision": "answered"
+    },
+    {
+      "id": "A11",
+      "gold": "answer",
+      "subtype": "answerable",
+      "decision": "answered"
+    },
+    {
+      "id": "A12",
+      "gold": "answer",
+      "subtype": "answerable",
+      "decision": "answered"
+    },
+    {
+      "id": "A13",
+      "gold": "answer",
+      "subtype": "answerable",
+      "decision": "answered"
+    },
+    {
+      "id": "A14",
+      "gold": "answer",
+      "subtype": "answerable",
+      "decision": "answered"
+    },
+    {
+      "id": "A15",
+      "gold": "answer",
+      "subtype": "answerable",
+      "decision": "answered"
+    },
+    {
+      "id": "A16",
+      "gold": "answer",
+      "subtype": "answerable",
+      "decision": "answered"
+    },
+    {
+      "id": "A17",
+      "gold": "answer",
+      "subtype": "answerable",
+      "decision": "answered"
+    },
+    {
+      "id": "A18",
+      "gold": "answer",
+      "subtype": "answerable",
+      "decision": "answered"
+    },
+    {
+      "id": "A19",
+      "gold": "answer",
+      "subtype": "answerable",
+      "decision": "answered"
+    },
+    {
+      "id": "A20",
+      "gold": "answer",
+      "subtype": "answerable",
+      "decision": "answered"
+    },
+    {
+      "id": "P01",
+      "gold": "partial",
+      "subtype": "partial",
+      "decision": "answered"
+    },
+    {
+      "id": "P02",
+      "gold": "partial",
+      "subtype": "partial",
+      "decision": "answered"
+    },
+    {
+      "id": "P03",
+      "gold": "partial",
+      "subtype": "partial",
+      "decision": "answered"
+    },
+    {
+      "id": "P04",
+      "gold": "partial",
+      "subtype": "partial",
+      "decision": "answered"
+    },
+    {
+      "id": "P05",
+      "gold": "partial",
+      "subtype": "partial",
+      "decision": "answered"
+    },
+    {
+      "id": "P06",
+      "gold": "partial",
+      "subtype": "partial",
+      "decision": "answered"
+    },
+    {
+      "id": "P07",
+      "gold": "partial",
+      "subtype": "partial",
+      "decision": "answered"
+    },
+    {
+      "id": "P08",
+      "gold": "partial",
+      "subtype": "partial",
+      "decision": "answered"
+    },
+    {
+      "id": "P09",
+      "gold": "partial",
+      "subtype": "partial",
+      "decision": "answered"
+    },
+    {
+      "id": "P10",
+      "gold": "partial",
+      "subtype": "partial",
+      "decision": "answered"
+    },
+    {
+      "id": "N01",
+      "gold": "abstain",
+      "subtype": "near_miss",
+      "decision": "answered"
+    },
+    {
+      "id": "N02",
+      "gold": "abstain",
+      "subtype": "near_miss",
+      "decision": "answered"
+    },
+    {
+      "id": "N03",
+      "gold": "abstain",
+      "subtype": "near_miss",
+      "decision": "answered"
+    },
+    {
+      "id": "N04",
+      "gold": "abstain",
+      "subtype": "near_miss",
+      "decision": "answered"
+    },
+    {
+      "id": "N05",
+      "gold": "abstain",
+      "subtype": "near_miss",
+      "decision": "answered"
+    },
+    {
+      "id": "N06",
+      "gold": "abstain",
+      "subtype": "near_miss",
+      "decision": "answered"
+    },
+    {
+      "id": "N07",
+      "gold": "abstain",
+      "subtype": "near_miss",
+      "decision": "answered"
+    },
+    {
+      "id": "N08",
+      "gold": "abstain",
+      "subtype": "near_miss",
+      "decision": "answered"
+    },
+    {
+      "id": "N09",
+      "gold": "abstain",
+      "subtype": "near_miss",
+      "decision": "answered"
+    },
+    {
+      "id": "O01",
+      "gold": "abstain",
+      "subtype": "off_topic",
+      "decision": "answered"
+    },
+    {
+      "id": "O02",
+      "gold": "abstain",
+      "subtype": "off_topic",
+      "decision": "answered"
+    },
+    {
+      "id": "O03",
+      "gold": "abstain",
+      "subtype": "off_topic",
+      "decision": "answered"
+    },
+    {
+      "id": "O04",
+      "gold": "abstain",
+      "subtype": "off_topic",
+      "decision": "answered"
+    },
+    {
+      "id": "O05",
+      "gold": "abstain",
+      "subtype": "off_topic",
+      "decision": "answered"
+    },
+    {
+      "id": "O06",
+      "gold": "abstain",
+      "subtype": "off_topic",
+      "decision": "answered"
+    }
+  ]
+}
