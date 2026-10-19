@@ -52,6 +52,20 @@ kept the model fixed so the experiments only changed one thing at a time."
 only reviewed the risky ones; try a larger knowledge base with retrieval; and test the subtle case
 that got past everything, a conclusion drawn from what a page leaves out."
 
+**"Isn't 68% citation validity bad?"**
+"It's the most uncomfortable number in the project, and it's the one I'd lead with anyway. Two
+things make it readable. First, the comparison: the same reviewer, blind, scored the no-decline
+format at 36%, so the design change nearly doubled it. Second, the kind of failure changed. The
+forced format's failures were wrong conclusions — it decided the quota counts error-workflow runs
+when the docs never say so. The final system's failures are embellishments: it claims the Loop Over
+Items node and a Batch Size setting from a quote that describes batching without naming either. One
+misleads a reviewer; the other wastes ten seconds of their time.
+
+I also checked whether the rate was just an artifact of the hard questions, and it isn't — 67.9%
+where the docs fall short, 68.1% where they fully answer. It's how the system writes, not what it
+was asked. That's why a human approval step is in the design rather than something I'd remove once
+the numbers looked good."
+
 **What didn't work?**
 "My first question set was too easy. My keyword baseline exposed a bias in how I'd written the
 near-miss questions. And the first version of my code check threw out three true claims because
@@ -63,6 +77,7 @@ results."
 - 60 questions, 21 pages, about 36k tokens per request
 - Overclaim rate: 0% for the final system, 100% for always-answer, 23% for keyword match
 - Keyword match wrongly refuses 64% of answerable questions; the final system 0%
-- Citation validity on the risky questions: 36% without the not-covered slot, 68% with the final design
+- Citation validity: 36% without the not-covered slot, 68% with the final design (both on the risky
+  questions, blind, same reviewer); the final system is 68% across all 97 of its cited claims too
 - 4 invalid answers fixed to 0 by the code check
 - $3.40 total API cost

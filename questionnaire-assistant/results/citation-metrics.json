@@ -1,22 +1,37 @@
 {
   "claude-forced-answer-r2": {
-    "citationValidity": {
-      "hits": 42,
-      "total": 117,
-      "rate": 0.358974358974359
+    "hardQuestions": {
+      "citationValidity": {
+        "hits": 42,
+        "total": 117,
+        "rate": 0.358974358974359
+      },
+      "quotesExist": 94,
+      "uncited": 22,
+      "totalClaims": 117
     },
-    "quotesExist": 94,
-    "uncited": 22,
-    "totalClaims": 117
+    "allQuestions": null
   },
   "claude-grounded-v2": {
-    "citationValidity": {
-      "hits": 19,
-      "total": 28,
-      "rate": 0.6785714285714286
+    "hardQuestions": {
+      "citationValidity": {
+        "hits": 19,
+        "total": 28,
+        "rate": 0.6785714285714286
+      },
+      "quotesExist": 28,
+      "uncited": 0,
+      "totalClaims": 28
     },
-    "quotesExist": 28,
-    "uncited": 0,
-    "totalClaims": 28
+    "allQuestions": {
+      "citationValidity": {
+        "hits": 66,
+        "total": 97,
+        "rate": 0.6804123711340206
+      },
+      "quotesExist": 97,
+      "uncited": 0,
+      "totalClaims": 97
+    }
   }
 }

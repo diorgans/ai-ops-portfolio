@@ -29,13 +29,15 @@ word for word, so a code check for citations passes them. Only a human check of 
 
 ### Does the quote actually support the claim?
 
-A person judged each claim against its quote, blind to which system wrote it, on the questions the
-docs don't fully answer (where the risk is):
+A person judged each claim against its quote, blind to which system wrote it. Both systems were
+judged on the questions the docs don't fully answer, where the risk is; the final system was then
+judged on every remaining claim too.
 
-| system | claims | citation valid (quote exists **and** supports the whole claim) |
-|---|---|---|
-| Answer format with no way to decline | 117 | **36%** (42/117); 22 claims had no citation at all |
-| Final system | 28 | **68%** (19/28) |
+| system | scope | claims | citation valid (quote exists **and** supports the whole claim) |
+|---|---|---|---|
+| Answer format with no way to decline | hard questions | 117 | **36%** (42/117); 22 claims had no citation at all |
+| Final system | hard questions | 28 | **68%** (19/28) |
+| Final system | **all 60 questions** | 97 | **68%** (66/97) |
 
 - **The human check caught every confirmed wrong guess** in the forced run: all claims behind the
   wrong quota and publishing answers were marked "doesn't support".
@@ -47,8 +49,18 @@ docs don't fully answer (where the risk is):
   ("the **Code node** supports Python" from "n8n added Python support"); two add commentary on what
   the docs omit. None is a wrong conclusion. The reviewer applied the same strict standard to both
   systems, blind, so the comparison holds even where a single verdict is debatable.
-- **Scope:** the final system's 69 claims on answerable questions were not judged, so its overall
-  citation validity is unknown.
+- **Citation validity does not improve on the easy questions.** The final system scores 67.9%
+  (19/28) where the docs fall short and 68.1% (47/69) where they fully answer the question. A
+  0.2-point difference on these sample sizes is noise, so the honest claim is that the two are
+  indistinguishable: the rate at which a claim outruns its quote looks like a property of how the
+  system writes, not of whether the answer was available. The headline overclaim metric is clean at
+  the *status* level — it never answered fully when it shouldn't — while roughly a third of
+  individual claims still overreach their quote. Those are two different failures, and only the
+  second one needs a human.
+- **Scope:** the forced-answer arm was judged only on the hard questions (106 of its cited claims on
+  answerable questions were never put in the labelling page), so it has no all-questions figure and
+  `results/citation-metrics.json` reports `null` rather than a partial numerator over a full
+  denominator. The two systems are therefore compared on the hard-question rows only.
 
 ## What we found
 
@@ -85,9 +97,10 @@ docs don't fully answer (where the risk is):
   of its quotes was under 4 words, and short bullet-list items ("HTTP Request") tripped it.
   Version 2 drops only the bad quote. This was fixed by re-running the check on the saved answers,
   with no new model calls, and is disclosed because it was changed after seeing results.
-- **Even the final system's claims are only 68% fully supported by their quotes** on the hard
-  questions. The grounding rules stop wrong conclusions; they don't stop small embellishments. The
-  human reviewer remains necessary, which is why the design keeps one.
+- **Even the final system's claims are only 68% fully supported by their quotes** — and that holds
+  across all 97 of its cited claims, not just the hard ones. The grounding rules stop wrong
+  conclusions; they don't stop small embellishments. The human reviewer remains necessary, which is
+  why the design keeps one.
 - **The final system hedges.** On 5 of 25 answerable questions it answered fully but also listed
   things nobody asked about as "not covered" (for example, "SMS alerts are not described"). Not a
   risk, but noise for the reviewer.
@@ -123,6 +136,11 @@ docs don't fully answer (where the risk is):
 - The reviewer is not an n8n expert. The review checks whether quotes say what the points claim; it
   is weaker at catching a "not in the docs" fact that is actually there in different words. A keyword
   search backs this up but doesn't prove absence.
+- **One labeller, so there is no inter-rater agreement figure.** The citation review ran in two
+  sittings two days apart, which gives a weak check on whether one person's standard held: the final
+  system's unsupported rate was 32% in the first batch and 32% in the second. The first batch's
+  higher overall rate (50%) is the forced-answer arm scoring worse, not the standard tightening.
+  That is consistency, not correctness — individual verdicts are strict, and some are debatable.
 - One model (Claude Sonnet 5, thinking off) and one knowledge base, small enough to fit in a single
   prompt, so there is no retrieval step to fail.
 

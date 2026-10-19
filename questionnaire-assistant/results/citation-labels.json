@@ -1,5 +1,5 @@
 {
-  "exported_at": "2026-10-18T17:14:12.381Z",
+  "exported_at": "2026-10-19T23:27:59.292Z",
   "labels": [
     {
       "key": "c001",
@@ -982,7 +982,7 @@
       "arm": "claude-grounded-v2",
       "qid": "A04",
       "index": 0,
-      "verdict": null,
+      "verdict": "supports",
       "note": ""
     },
     {
@@ -990,7 +990,7 @@
       "arm": "claude-grounded-v2",
       "qid": "H09",
       "index": 0,
-      "verdict": null,
+      "verdict": "supports",
       "note": ""
     },
     {
@@ -998,7 +998,7 @@
       "arm": "claude-grounded-v2",
       "qid": "A06",
       "index": 1,
-      "verdict": null,
+      "verdict": "not_supported",
       "note": ""
     },
     {
@@ -1006,7 +1006,7 @@
       "arm": "claude-grounded-v2",
       "qid": "A11",
       "index": 3,
-      "verdict": null,
+      "verdict": "supports",
       "note": ""
     },
     {
@@ -1014,7 +1014,7 @@
       "arm": "claude-grounded-v2",
       "qid": "A19",
       "index": 2,
-      "verdict": null,
+      "verdict": "supports",
       "note": ""
     },
     {
@@ -1022,7 +1022,7 @@
       "arm": "claude-grounded-v2",
       "qid": "A06",
       "index": 3,
-      "verdict": null,
+      "verdict": "supports",
       "note": ""
     },
     {
@@ -1030,7 +1030,7 @@
       "arm": "claude-grounded-v2",
       "qid": "A20",
       "index": 1,
-      "verdict": null,
+      "verdict": "supports",
       "note": ""
     },
     {
@@ -1038,7 +1038,7 @@
       "arm": "claude-grounded-v2",
       "qid": "A06",
       "index": 4,
-      "verdict": null,
+      "verdict": "supports",
       "note": ""
     },
     {
@@ -1046,7 +1046,7 @@
       "arm": "claude-grounded-v2",
       "qid": "A16",
       "index": 0,
-      "verdict": null,
+      "verdict": "not_supported",
       "note": ""
     },
     {
@@ -1054,7 +1054,7 @@
       "arm": "claude-grounded-v2",
       "qid": "H10",
       "index": 1,
-      "verdict": null,
+      "verdict": "not_supported",
       "note": ""
     },
     {
@@ -1062,7 +1062,7 @@
       "arm": "claude-grounded-v2",
       "qid": "A06",
       "index": 2,
-      "verdict": null,
+      "verdict": "supports",
       "note": ""
     },
     {
@@ -1070,7 +1070,7 @@
       "arm": "claude-grounded-v2",
       "qid": "A01",
       "index": 1,
-      "verdict": null,
+      "verdict": "supports",
       "note": ""
     },
     {
@@ -1078,7 +1078,7 @@
       "arm": "claude-grounded-v2",
       "qid": "A11",
       "index": 1,
-      "verdict": null,
+      "verdict": "supports",
       "note": ""
     },
     {
@@ -1086,7 +1086,7 @@
       "arm": "claude-grounded-v2",
       "qid": "A20",
       "index": 0,
-      "verdict": null,
+      "verdict": "supports",
       "note": ""
     },
     {
@@ -1094,7 +1094,7 @@
       "arm": "claude-grounded-v2",
       "qid": "H11",
       "index": 0,
-      "verdict": null,
+      "verdict": "supports",
       "note": ""
     },
     {
@@ -1102,7 +1102,7 @@
       "arm": "claude-grounded-v2",
       "qid": "A06",
       "index": 5,
-      "verdict": null,
+      "verdict": "not_supported",
       "note": ""
     },
     {
@@ -1110,7 +1110,7 @@
       "arm": "claude-grounded-v2",
       "qid": "H13",
       "index": 0,
-      "verdict": null,
+      "verdict": "supports",
       "note": ""
     },
     {
@@ -1118,7 +1118,7 @@
       "arm": "claude-grounded-v2",
       "qid": "A18",
       "index": 0,
-      "verdict": null,
+      "verdict": "not_supported",
       "note": ""
     },
     {
@@ -1126,7 +1126,7 @@
       "arm": "claude-grounded-v2",
       "qid": "A17",
       "index": 1,
-      "verdict": null,
+      "verdict": "not_supported",
       "note": ""
     },
     {
@@ -1134,7 +1134,7 @@
       "arm": "claude-grounded-v2",
       "qid": "A01",
       "index": 5,
-      "verdict": null,
+      "verdict": "supports",
       "note": ""
     },
     {
@@ -1142,7 +1142,7 @@
       "arm": "claude-grounded-v2",
       "qid": "A03",
       "index": 4,
-      "verdict": null,
+      "verdict": "supports",
       "note": ""
     },
     {
@@ -1150,7 +1150,7 @@
       "arm": "claude-grounded-v2",
       "qid": "A12",
       "index": 0,
-      "verdict": null,
+      "verdict": "supports",
       "note": ""
     },
     {
@@ -1158,7 +1158,7 @@
       "arm": "claude-grounded-v2",
       "qid": "A13",
       "index": 1,
-      "verdict": null,
+      "verdict": "supports",
       "note": ""
     },
     {
@@ -1166,7 +1166,7 @@
       "arm": "claude-grounded-v2",
       "qid": "A07",
       "index": 3,
-      "verdict": null,
+      "verdict": "supports",
       "note": ""
     },
     {
@@ -1174,7 +1174,7 @@
       "arm": "claude-grounded-v2",
       "qid": "A13",
       "index": 0,
-      "verdict": null,
+      "verdict": "supports",
       "note": ""
     },
     {
@@ -1182,7 +1182,7 @@
       "arm": "claude-grounded-v2",
       "qid": "A20",
       "index": 4,
-      "verdict": null,
+      "verdict": "supports",
       "note": ""
     },
     {
@@ -1190,7 +1190,7 @@
       "arm": "claude-grounded-v2",
       "qid": "A02",
       "index": 0,
-      "verdict": null,
+      "verdict": "supports",
       "note": ""
     },
     {
@@ -1198,7 +1198,7 @@
       "arm": "claude-grounded-v2",
       "qid": "H10",
       "index": 2,
-      "verdict": null,
+      "verdict": "not_supported",
       "note": ""
     },
     {
@@ -1206,7 +1206,7 @@
       "arm": "claude-grounded-v2",
       "qid": "A03",
       "index": 2,
-      "verdict": null,
+      "verdict": "supports",
       "note": ""
     },
     {
@@ -1214,7 +1214,7 @@
       "arm": "claude-grounded-v2",
       "qid": "A07",
       "index": 2,
-      "verdict": null,
+      "verdict": "not_supported",
       "note": ""
     },
     {
@@ -1222,7 +1222,7 @@
       "arm": "claude-grounded-v2",
       "qid": "A06",
       "index": 0,
-      "verdict": null,
+      "verdict": "not_supported",
       "note": ""
     },
     {
@@ -1230,7 +1230,7 @@
       "arm": "claude-grounded-v2",
       "qid": "A01",
       "index": 3,
-      "verdict": null,
+      "verdict": "supports",
       "note": ""
     },
     {
@@ -1238,7 +1238,7 @@
       "arm": "claude-grounded-v2",
       "qid": "A17",
       "index": 2,
-      "verdict": null,
+      "verdict": "supports",
       "note": ""
     },
     {
@@ -1246,7 +1246,7 @@
       "arm": "claude-grounded-v2",
       "qid": "A10",
       "index": 0,
-      "verdict": null,
+      "verdict": "supports",
       "note": ""
     },
     {
@@ -1254,7 +1254,7 @@
       "arm": "claude-grounded-v2",
       "qid": "A20",
       "index": 2,
-      "verdict": null,
+      "verdict": "supports",
       "note": ""
     },
     {
@@ -1262,7 +1262,7 @@
       "arm": "claude-grounded-v2",
       "qid": "A01",
       "index": 2,
-      "verdict": null,
+      "verdict": "supports",
       "note": ""
     },
     {
@@ -1270,7 +1270,7 @@
       "arm": "claude-grounded-v2",
       "qid": "A09",
       "index": 1,
-      "verdict": null,
+      "verdict": "supports",
       "note": ""
     },
     {
@@ -1278,7 +1278,7 @@
       "arm": "claude-grounded-v2",
       "qid": "A15",
       "index": 0,
-      "verdict": null,
+      "verdict": "not_supported",
       "note": ""
     },
     {
@@ -1286,7 +1286,7 @@
       "arm": "claude-grounded-v2",
       "qid": "H12",
       "index": 1,
-      "verdict": null,
+      "verdict": "supports",
       "note": ""
     },
     {
@@ -1294,7 +1294,7 @@
       "arm": "claude-grounded-v2",
       "qid": "H12",
       "index": 0,
-      "verdict": null,
+      "verdict": "not_supported",
       "note": ""
     },
     {
@@ -1302,7 +1302,7 @@
       "arm": "claude-grounded-v2",
       "qid": "A09",
       "index": 0,
-      "verdict": null,
+      "verdict": "not_supported",
       "note": ""
     },
     {
@@ -1310,7 +1310,7 @@
       "arm": "claude-grounded-v2",
       "qid": "A03",
       "index": 0,
-      "verdict": null,
+      "verdict": "not_supported",
       "note": ""
     },
     {
@@ -1318,7 +1318,7 @@
       "arm": "claude-grounded-v2",
       "qid": "A03",
       "index": 1,
-      "verdict": null,
+      "verdict": "supports",
       "note": ""
     },
     {
@@ -1326,7 +1326,7 @@
       "arm": "claude-grounded-v2",
       "qid": "A07",
       "index": 0,
-      "verdict": null,
+      "verdict": "supports",
       "note": ""
     },
     {
@@ -1334,7 +1334,7 @@
       "arm": "claude-grounded-v2",
       "qid": "A05",
       "index": 0,
-      "verdict": null,
+      "verdict": "not_supported",
       "note": ""
     },
     {
@@ -1342,7 +1342,7 @@
       "arm": "claude-grounded-v2",
       "qid": "A17",
       "index": 0,
-      "verdict": null,
+      "verdict": "supports",
       "note": ""
     },
     {
@@ -1350,7 +1350,7 @@
       "arm": "claude-grounded-v2",
       "qid": "A10",
       "index": 1,
-      "verdict": null,
+      "verdict": "supports",
       "note": ""
     },
     {
@@ -1358,7 +1358,7 @@
       "arm": "claude-grounded-v2",
       "qid": "A01",
       "index": 6,
-      "verdict": null,
+      "verdict": "supports",
       "note": ""
     },
     {
@@ -1366,7 +1366,7 @@
       "arm": "claude-grounded-v2",
       "qid": "A11",
       "index": 2,
-      "verdict": null,
+      "verdict": "supports",
       "note": ""
     },
     {
@@ -1374,7 +1374,7 @@
       "arm": "claude-grounded-v2",
       "qid": "A18",
       "index": 3,
-      "verdict": null,
+      "verdict": "supports",
       "note": ""
     },
     {
@@ -1382,7 +1382,7 @@
       "arm": "claude-grounded-v2",
       "qid": "A19",
       "index": 0,
-      "verdict": null,
+      "verdict": "supports",
       "note": ""
     },
     {
@@ -1390,7 +1390,7 @@
       "arm": "claude-grounded-v2",
       "qid": "A15",
       "index": 1,
-      "verdict": null,
+      "verdict": "supports",
       "note": ""
     },
     {
@@ -1398,7 +1398,7 @@
       "arm": "claude-grounded-v2",
       "qid": "H10",
       "index": 0,
-      "verdict": null,
+      "verdict": "not_supported",
       "note": ""
     },
     {
@@ -1406,7 +1406,7 @@
       "arm": "claude-grounded-v2",
       "qid": "A07",
       "index": 1,
-      "verdict": null,
+      "verdict": "supports",
       "note": ""
     },
     {
@@ -1414,7 +1414,7 @@
       "arm": "claude-grounded-v2",
       "qid": "A19",
       "index": 1,
-      "verdict": null,
+      "verdict": "not_supported",
       "note": ""
     },
     {
@@ -1422,7 +1422,7 @@
       "arm": "claude-grounded-v2",
       "qid": "A01",
       "index": 0,
-      "verdict": null,
+      "verdict": "not_supported",
       "note": ""
     },
     {
@@ -1430,7 +1430,7 @@
       "arm": "claude-grounded-v2",
       "qid": "A02",
       "index": 1,
-      "verdict": null,
+      "verdict": "supports",
       "note": ""
     },
     {
@@ -1438,7 +1438,7 @@
       "arm": "claude-grounded-v2",
       "qid": "A17",
       "index": 3,
-      "verdict": null,
+      "verdict": "not_supported",
       "note": ""
     },
     {
@@ -1446,7 +1446,7 @@
       "arm": "claude-grounded-v2",
       "qid": "A08",
       "index": 0,
-      "verdict": null,
+      "verdict": "supports",
       "note": ""
     },
     {
@@ -1454,7 +1454,7 @@
       "arm": "claude-grounded-v2",
       "qid": "A02",
       "index": 2,
-      "verdict": null,
+      "verdict": "not_supported",
       "note": ""
     },
     {
@@ -1462,7 +1462,7 @@
       "arm": "claude-grounded-v2",
       "qid": "A20",
       "index": 3,
-      "verdict": null,
+      "verdict": "supports",
       "note": ""
     },
     {
@@ -1470,7 +1470,7 @@
       "arm": "claude-grounded-v2",
       "qid": "A01",
       "index": 4,
-      "verdict": null,
+      "verdict": "not_supported",
       "note": ""
     },
     {
@@ -1478,7 +1478,7 @@
       "arm": "claude-grounded-v2",
       "qid": "A03",
       "index": 3,
-      "verdict": null,
+      "verdict": "not_supported",
       "note": ""
     },
     {
@@ -1486,7 +1486,7 @@
       "arm": "claude-grounded-v2",
       "qid": "H09",
       "index": 1,
-      "verdict": null,
+      "verdict": "supports",
       "note": ""
     },
     {
@@ -1494,7 +1494,7 @@
       "arm": "claude-grounded-v2",
       "qid": "A16",
       "index": 1,
-      "verdict": null,
+      "verdict": "not_supported",
       "note": ""
     },
     {
@@ -1502,7 +1502,7 @@
       "arm": "claude-grounded-v2",
       "qid": "A11",
       "index": 0,
-      "verdict": null,
+      "verdict": "supports",
       "note": ""
     },
     {
@@ -1510,7 +1510,7 @@
       "arm": "claude-grounded-v2",
       "qid": "A18",
       "index": 1,
-      "verdict": null,
+      "verdict": "supports",
       "note": ""
     },
     {
@@ -1518,7 +1518,7 @@
       "arm": "claude-grounded-v2",
       "qid": "A18",
       "index": 2,
-      "verdict": null,
+      "verdict": "supports",
       "note": ""
     },
     {
@@ -1526,7 +1526,7 @@
       "arm": "claude-grounded-v2",
       "qid": "A14",
       "index": 0,
-      "verdict": null,
+      "verdict": "supports",
       "note": ""
     }
   ]

@@ -3,8 +3,13 @@
 // exist on the cited page (code) AND the reviewer judged they support the whole claim (human).
 // Uncited claims and claims with missing quotes count as invalid without needing a human verdict.
 //
-// Scope: the reviewer judged the 122 claims on questions the docs don't fully answer. The final
-// system's 69 claims on answerable questions were not judged, so they are not reported.
+// Two scopes are reported per arm:
+//   hardQuestions — questions the docs don't fully answer. Both arms are judged here, blind and
+//                   shuffled together, so this is the valid head-to-head comparison.
+//   allQuestions  — every question. Only reported for an arm whose cited claims are all judged;
+//                   otherwise null, because a partial numerator over a full denominator would
+//                   understate the arm. The forced-answer arm's answerable-question claims were
+//                   never put in the labelling page, so it reports null here by design.
 //
 // Writes results/citation-labels.json (verdicts only, no n8n text) and results/citation-metrics.json.
 // Usage: node scripts/score-citations.mjs
@@ -31,20 +36,29 @@ const lookup = Object.fromEntries(joined.map((j) => [`${j.arm}|${j.qid}|${j.inde
 const result = {};
 for (const arm of ['claude-forced-answer-r2', 'claude-grounded-v2']) {
   const run = JSON.parse(readFileSync(join(root, 'results', 'raw', `${arm}.json`), 'utf8'));
-  const claims = [];
+  const hard = [];
+  const all = [];
+  let unjudged = 0;
   for (const [qid, o] of Object.entries(run.outputs)) {
-    if (gold[qid] === 'answer') continue; // not judged
     o.claims.forEach((c, i) => {
       const cited = c.citations.length > 0;
       const quotesExist = cited && claimQuotesExist(c, pages);
       const v = lookup[`${arm}|${qid}|${i}`];
-      if (quotesExist && !v) throw new Error(`no verdict for ${arm} ${qid} claim ${i}`);
-      claims.push({ cited, quotesExist, humanSupports: quotesExist ? v === 'supports' : undefined });
+      if (quotesExist && !v) unjudged++;
+      const claim = { cited, quotesExist, humanSupports: quotesExist ? v === 'supports' : undefined };
+      all.push(claim);
+      if (gold[qid] !== 'answer') {
+        if (quotesExist && !v) throw new Error(`no verdict for ${arm} ${qid} claim ${i}`);
+        hard.push(claim);
+      }
     });
   }
-  result[arm] = citationMetrics(claims);
-  const m = result[arm];
-  console.log(`${arm}: citation validity ${(100 * m.citationValidity.rate).toFixed(0)}% ` +
+  result[arm] = { hardQuestions: citationMetrics(hard), allQuestions: unjudged ? null : citationMetrics(all) };
+  const say = (label, m) => console.log(`  ${label.padEnd(14)} ${(100 * m.citationValidity.rate).toFixed(0)}% ` +
     `(${m.citationValidity.hits}/${m.totalClaims}); quotes exist ${m.quotesExist}, uncited ${m.uncited}`);
+  console.log(`${arm}:`);
+  say('hard questions', result[arm].hardQuestions);
+  if (result[arm].allQuestions) say('all questions', result[arm].allQuestions);
+  else console.log(`  all questions  not reported: ${unjudged} cited claims have no human verdict`);
 }
 writeFileSync(join(root, 'results', 'citation-metrics.json'), JSON.stringify(result, null, 2) + '\n');
