@@ -25,9 +25,9 @@
     },
     "allQuestions": {
       "citationValidity": {
-        "hits": 66,
+        "hits": 68,
         "total": 97,
-        "rate": 0.6804123711340206
+        "rate": 0.7010309278350515
       },
       "quotesExist": 97,
       "uncited": 0,

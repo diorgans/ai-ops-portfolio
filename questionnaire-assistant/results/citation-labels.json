@@ -1,5 +1,7 @@
 {
   "exported_at": "2026-10-19T23:27:59.292Z",
+  "revised_at": "2026-10-19T23:39:14.410Z",
+  "revision_note": "c167 and c182 were changed from not_supported to supports by the reviewer after the model flagged them. Original verdicts are in git history.",
   "labels": [
     {
       "key": "c001",
@@ -1334,8 +1336,8 @@
       "arm": "claude-grounded-v2",
       "qid": "A05",
       "index": 0,
-      "verdict": "not_supported",
-      "note": ""
+      "verdict": "supports",
+      "note": "revised from not_supported on re-read: the quote carries the whole claim. Post-hoc revision, disclosed in README."
     },
     {
       "key": "c168",
@@ -1454,8 +1456,8 @@
       "arm": "claude-grounded-v2",
       "qid": "A02",
       "index": 2,
-      "verdict": "not_supported",
-      "note": ""
+      "verdict": "supports",
+      "note": "revised from not_supported on re-read: the quote carries the whole claim. Post-hoc revision, disclosed in README."
     },
     {
       "key": "c183",

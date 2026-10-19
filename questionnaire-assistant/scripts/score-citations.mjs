@@ -29,8 +29,15 @@ const review = JSON.parse(readFileSync(join(root, 'labelling', 'citation-labels.
 const verdict = Object.fromEntries(review.labels.map((l) => [l.key, l]));
 
 const joined = items.map((it) => ({ ...it, verdict: verdict[it.key]?.verdict ?? null, note: verdict[it.key]?.note ?? '' }));
+// revised_at/revision_note are carried through when the reviewer has changed a verdict after the
+// fact, so the committed artifact records that and not only the original export date.
 writeFileSync(join(root, 'results', 'citation-labels.json'),
-  JSON.stringify({ exported_at: review.exported_at, labels: joined }, null, 2) + '\n');
+  JSON.stringify({
+    exported_at: review.exported_at,
+    ...(review.revised_at ? { revised_at: review.revised_at } : {}),
+    ...(review.revision_note ? { revision_note: review.revision_note } : {}),
+    labels: joined,
+  }, null, 2) + '\n');
 const lookup = Object.fromEntries(joined.map((j) => [`${j.arm}|${j.qid}|${j.index}`, j.verdict]));
 
 const result = {};

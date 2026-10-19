@@ -37,8 +37,15 @@ judged on every remaining claim too.
 |---|---|---|---|
 | Answer format with no way to decline | hard questions | 117 | **36%** (42/117); 22 claims had no citation at all |
 | Final system | hard questions | 28 | **68%** (19/28) |
-| Final system | **all 60 questions** | 97 | **68%** (66/97) |
+| Final system | **all 60 questions** | 97 | **70%** (68/97) |
 
+- **Disclosure: two verdicts were revised after the fact.** While writing this up, the model
+  flagged a handful of "doesn't support" verdicts it disagreed with. The reviewer re-read them and
+  changed two (c167, c182) to "supports", where the quote does carry the whole claim. That moved the
+  all-questions figure from 68% to 70%. It is disclosed rather than quietly folded in, because
+  revising ground truth after seeing a disagreement is the exact failure this project is built to
+  avoid, and the one flagging the disagreement was the system under test. The remaining flagged
+  verdicts were left as the reviewer originally judged them; original verdicts are in git history.
 - **The human check caught every confirmed wrong guess** in the forced run: all claims behind the
   wrong quota and publishing answers were marked "doesn't support".
 - **It missed one.** "No, the 200 MiB limit cannot be raised on n8n Cloud" was reasoned from "In
@@ -50,13 +57,13 @@ judged on every remaining claim too.
   the docs omit. None is a wrong conclusion. The reviewer applied the same strict standard to both
   systems, blind, so the comparison holds even where a single verdict is debatable.
 - **Citation validity does not improve on the easy questions.** The final system scores 67.9%
-  (19/28) where the docs fall short and 68.1% (47/69) where they fully answer the question. A
-  0.2-point difference on these sample sizes is noise, so the honest claim is that the two are
-  indistinguishable: the rate at which a claim outruns its quote looks like a property of how the
-  system writes, not of whether the answer was available. The headline overclaim metric is clean at
-  the *status* level — it never answered fully when it shouldn't — while roughly a third of
-  individual claims still overreach their quote. Those are two different failures, and only the
-  second one needs a human.
+  (19/28) where the docs fall short and 71.0% (49/69) where they fully answer the question. That
+  3.2-point difference is 0.30 standard errors on these sample sizes, so the honest claim is that
+  the two are indistinguishable: the rate at which a claim outruns its quote looks like a property
+  of how the system writes, not of whether the answer was available. The headline overclaim metric
+  is clean at the *status* level — it never answered fully when it shouldn't — while roughly a
+  third of individual claims still overreach their quote. Those are two different failures, and
+  only the second one needs a human.
 - **Scope:** the forced-answer arm was judged only on the hard questions (106 of its cited claims on
   answerable questions were never put in the labelling page), so it has no all-questions figure and
   `results/citation-metrics.json` reports `null` rather than a partial numerator over a full
@@ -97,10 +104,10 @@ judged on every remaining claim too.
   of its quotes was under 4 words, and short bullet-list items ("HTTP Request") tripped it.
   Version 2 drops only the bad quote. This was fixed by re-running the check on the saved answers,
   with no new model calls, and is disclosed because it was changed after seeing results.
-- **Even the final system's claims are only 68% fully supported by their quotes** — and that holds
-  across all 97 of its cited claims, not just the hard ones. The grounding rules stop wrong
-  conclusions; they don't stop small embellishments. The human reviewer remains necessary, which is
-  why the design keeps one.
+- **Even the final system's claims are only 70% fully supported by their quotes** — and that holds
+  across all 97 of its cited claims, not just the hard ones (68% on the hard ones alone). The
+  grounding rules stop wrong conclusions; they don't stop small embellishments. The human reviewer
+  remains necessary, which is why the design keeps one.
 - **The final system hedges.** On 5 of 25 answerable questions it answered fully but also listed
   things nobody asked about as "not covered" (for example, "SMS alerts are not described"). Not a
   risk, but noise for the reviewer.
@@ -138,7 +145,7 @@ judged on every remaining claim too.
   search backs this up but doesn't prove absence.
 - **One labeller, so there is no inter-rater agreement figure.** The citation review ran in two
   sittings two days apart, which gives a weak check on whether one person's standard held: the final
-  system's unsupported rate was 32% in the first batch and 32% in the second. The first batch's
+  system's unsupported rate was 32% in the first batch and 29% in the second. The first batch's
   higher overall rate (50%) is the forced-answer arm scoring worse, not the standard tightening.
   That is consistency, not correctness — individual verdicts are strict, and some are debatable.
 - One model (Claude Sonnet 5, thinking off) and one knowledge base, small enough to fit in a single

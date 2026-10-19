@@ -62,8 +62,8 @@ Items node and a Batch Size setting from a quote that describes batching without
 misleads a reviewer; the other wastes ten seconds of their time.
 
 I also checked whether the rate was just an artifact of the hard questions, and it isn't — 67.9%
-where the docs fall short, 68.1% where they fully answer. It's how the system writes, not what it
-was asked. That's why a human approval step is in the design rather than something I'd remove once
+where the docs fall short, 71.0% where they fully answer, which is a third of a standard error
+apart. It's how the system writes, not what it was asked. That's why a human approval step is in the design rather than something I'd remove once
 the numbers looked good."
 
 **What didn't work?**
@@ -77,7 +77,7 @@ results."
 - 60 questions, 21 pages, about 36k tokens per request
 - Overclaim rate: 0% for the final system, 100% for always-answer, 23% for keyword match
 - Keyword match wrongly refuses 64% of answerable questions; the final system 0%
-- Citation validity: 36% without the not-covered slot, 68% with the final design (both on the risky
-  questions, blind, same reviewer); the final system is 68% across all 97 of its cited claims too
+- Citation validity: 36% without the not-covered slot, 68% with the final design (both on the
+  risky questions, blind, same reviewer); the final system is 70% across all 97 of its cited claims
 - 4 invalid answers fixed to 0 by the code check
 - $3.40 total API cost
